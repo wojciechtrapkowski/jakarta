@@ -90,19 +90,15 @@ public class ApiServlet extends HttpServlet {
                 response.setContentType("application/json");
                 UUID uuid = extractUuid(Patterns.USER, path);
                 var user = userController.getUser(uuid);
-                if (user.isPresent()) {
-                    response.getWriter().write(jsonb.toJson(user));
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
+                response.getWriter().write(jsonb.toJson(user));
                 return;
             } else if (path.matches(Patterns.USER_AVATAR.pattern())) {
                 // Could be dynamic but atm we support only one format.
-                response.setContentType("image/png");
                 UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
-                byte[] portrait = userController.getUserAvatar(uuid);
-                response.setContentLength(portrait.length);
-                response.getOutputStream().write(portrait);
+                var avatar = userController.getUserAvatar(uuid);
+                response.setContentType("image/png");
+                response.setContentLength(avatar.length);
+                response.getOutputStream().write(avatar);
                 return;
             }
         }
@@ -115,7 +111,8 @@ public class ApiServlet extends HttpServlet {
         if (Paths.API.equals(servletPath)) {
             if (path.matches(Patterns.USER_AVATAR.pattern())) {
                 UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
-                userController.putUserAvatar(uuid, request.getPart("avatar").getInputStream());
+                var result = userController.putUserAvatar(uuid, request.getPart("avatar").getInputStream());
+                response.getWriter().write(jsonb.toJson(result));
                 return;
             }
         }
@@ -130,7 +127,8 @@ public class ApiServlet extends HttpServlet {
         if (Paths.API.equals(servletPath)) {
             if (path.matches(Patterns.USER_AVATAR.pattern())) {
                 UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
-                userController.deleteUserAvatar(uuid);
+                var result = userController.deleteUserAvatar(uuid);
+                response.getWriter().write(jsonb.toJson(result));
                 return;
             }
         }

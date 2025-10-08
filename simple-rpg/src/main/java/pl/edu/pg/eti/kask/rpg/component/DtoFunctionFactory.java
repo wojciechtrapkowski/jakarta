@@ -3,11 +3,7 @@ package pl.edu.pg.eti.kask.rpg.component;
 import pl.edu.pg.eti.kask.rpg.user.dto.GetUserResponse;
 import pl.edu.pg.eti.kask.rpg.user.dto.GetUsersResponse;
 import pl.edu.pg.eti.kask.rpg.user.dto.PutUserRequest;
-import pl.edu.pg.eti.kask.rpg.user.dto.function.RequestToUserFunction;
-import pl.edu.pg.eti.kask.rpg.user.dto.function.UpdateUserPasswordWithRequestFunction;
-import pl.edu.pg.eti.kask.rpg.user.dto.function.UpdateUserWithRequestFunction;
-import pl.edu.pg.eti.kask.rpg.user.dto.function.UserToResponseFunction;
-import pl.edu.pg.eti.kask.rpg.user.dto.function.UsersToResponseFunction;
+import pl.edu.pg.eti.kask.rpg.user.dto.function.*;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.util.function.Function;
@@ -52,6 +48,21 @@ public class DtoFunctionFactory {
     public UsersToResponseFunction usersToResponse() {
         return new UsersToResponseFunction();
     }
+
+    /**
+     * Returns a function to convert a list of {@link User} to {@link GetUsersResponse}.
+     *
+     * @return UsersToResponseFunction instance
+     */
+
+    public UpdateUserAvatarFunction updateUserAvatar() {
+        return new UpdateUserAvatarFunction();
+    }
+
+    public DeleteUserAvatarFunction deleteUserAvatar() {
+        return new DeleteUserAvatarFunction();
+    }
+
 
     /**
      * Returns a function to convert a single {@link User} to {@link GetUserResponse}.

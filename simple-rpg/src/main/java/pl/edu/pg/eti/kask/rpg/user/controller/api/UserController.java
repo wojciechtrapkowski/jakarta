@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.user.controller.api;
 
+import pl.edu.pg.eti.kask.rpg.user.dto.*;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.io.InputStream;
@@ -8,12 +9,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserController {
-    List<User> getUsers();
-    Optional<User> getUser(UUID uuid);
+    GetUsersResponse getUsers();
+    GetUserResponse getUser(UUID uuid);
 
-    void putUserAvatar(UUID id, InputStream portrait);
+    UpdateUserAvatarResponse putUserAvatar(UUID id, InputStream avatar);
 
     byte[] getUserAvatar(UUID id);
 
-    void deleteUserAvatar(UUID uuid);
+    DeleteUserAvatarResponse deleteUserAvatar(UUID uuid);
 }

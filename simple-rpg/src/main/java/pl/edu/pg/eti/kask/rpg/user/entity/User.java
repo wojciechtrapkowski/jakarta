@@ -43,7 +43,5 @@ public class User implements Serializable {
 
     private String email;
 
-    private byte[] avatar;
-
     // In the future, add List<Review> reviews
 }

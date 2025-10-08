@@ -3,6 +3,7 @@ package pl.edu.pg.eti.kask.rpg.user.controller.simple;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.user.controller.api.UserController;
+import pl.edu.pg.eti.kask.rpg.user.dto.*;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
@@ -26,40 +27,46 @@ public class SimpleUserController implements UserController {
     }
 
     @Override
-    public List<User> getUsers() {
-        return userService.findAll();
+    public GetUsersResponse getUsers() {
+        return factory.usersToResponse().apply(userService.findAll());
     }
 
     @Override
-    public Optional<User> getUser(UUID uuid) {
-        return userService.find(uuid);
+    public GetUserResponse getUser(UUID uuid) {
+        return userService.find(uuid)
+                .map(factory.userToResponse())
+                .orElseThrow(NotFoundException::new);
+
     }
 
     @Override
-    public void putUserAvatar(UUID id, InputStream portrait) {
-        userService.find(id).ifPresentOrElse(
-                entity -> userService.updateAvatar(id, portrait),
-                () -> {
-                    throw new NotFoundException();
-                }
-        );
+    public UpdateUserAvatarResponse putUserAvatar(UUID id, InputStream avatar) {
+        boolean updated = userService.find(id)
+                .map(user -> {
+                    userService.updateAvatar(id, avatar);
+                    return true;
+                })
+                .orElse(false);
+
+        return factory.updateUserAvatar().apply(updated);
     }
 
     @Override
     public byte[] getUserAvatar(UUID id) {
-        return userService.find(id)
-                .map(User::getAvatar)
-                .orElseThrow(NotFoundException::new);
+        return userService.getAvatar(id);
     }
 
 
     @Override
-    public void deleteUserAvatar(UUID id) {
-        userService.find(id).ifPresentOrElse(
-                        entity -> userService.deleteAvatar(id),
-                        () -> {
-                            throw new NotFoundException();
-        });
+    public DeleteUserAvatarResponse deleteUserAvatar(UUID id) {
+        boolean deleted = userService.find(id)
+                .map(user -> {
+                    userService.deleteAvatar(id);
+                    return true;
+                })
+                .orElse(false);
+
+        return factory.deleteUserAvatar().apply(deleted);
     }
 
 }

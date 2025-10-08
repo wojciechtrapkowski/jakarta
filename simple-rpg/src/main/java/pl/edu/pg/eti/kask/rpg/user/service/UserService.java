@@ -1,7 +1,9 @@
 package pl.edu.pg.eti.kask.rpg.user.service;
 
+import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
+import pl.edu.pg.eti.kask.rpg.user.repository.api.UserAvatarRepository;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
 import java.io.IOException;
@@ -18,19 +20,17 @@ public class UserService {
     /**
      * Repository for user entity.
      */
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
+    private final UserAvatarRepository userAvatarRepository;
     /**
      * Hash mechanism used for storing users' passwords.
      */
     private final Pbkdf2PasswordHash passwordHash;
 
-    /**
-     * @param repository   repository for character entity
-     * @param passwordHash hash mechanism used for storing users' passwords
-     */
-    public UserService(UserRepository repository, Pbkdf2PasswordHash passwordHash) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository, UserAvatarRepository userAvatarRepository, Pbkdf2PasswordHash passwordHash) {
+        this.userRepository = userRepository;
+        this.userAvatarRepository = userAvatarRepository;
         this.passwordHash = passwordHash;
     }
 
@@ -39,7 +39,7 @@ public class UserService {
      * @return container (can be empty) with user
      */
     public Optional<User> find(UUID id) {
-        return repository.find(id);
+        return userRepository.find(id);
     }
 
     /**
@@ -49,11 +49,11 @@ public class UserService {
      * @return container (can be empty) with user
      */
     public Optional<User> find(String login) {
-        return repository.findByLogin(login);
+        return userRepository.findByLogin(login);
     }
 
     public List<User> findAll() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
 
@@ -64,24 +64,38 @@ public class UserService {
      */
     public void create(User user) {
         user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
-        repository.create(user);
+        userRepository.create(user);
     }
 
     public void updateAvatar(UUID id, InputStream is) {
-        repository.find(id).ifPresent(user -> {
+        userRepository.find(id).ifPresent(user -> {
             try {
-                user.setAvatar(is.readAllBytes());
-                repository.update(user);
+                userAvatarRepository.saveAvatar(id, is);
             } catch (IOException ex) {
-                throw new IllegalStateException(ex);
+                throw new NotFoundException("User not found");
             }
         });
     }
 
+    public byte[] getAvatar(UUID id) {
+        return userRepository.find(id)
+                .map(user -> {
+                    try {
+                        return userAvatarRepository.getAvatar(id);
+                    } catch (IOException ex) {
+                        throw new NotFoundException("User not found");
+                    }
+                })
+                .orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
     public void deleteAvatar(UUID id) {
-        repository.find(id).ifPresent(user -> {
-            user.setAvatar(null);
-            repository.update(user);
+        userRepository.find(id).ifPresent(user -> {
+            try {
+                userAvatarRepository.deleteAvatar(id);
+            } catch (IOException ex) {
+                throw new NotFoundException("User not found");
+            }
         });
     }
 

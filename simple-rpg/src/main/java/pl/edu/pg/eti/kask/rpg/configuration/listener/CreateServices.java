@@ -5,8 +5,10 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.datastore.component.DataStore;
+import pl.edu.pg.eti.kask.rpg.user.repository.api.UserAvatarRepository;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 import pl.edu.pg.eti.kask.rpg.user.repository.memory.UserInMemoryRepository;
+import pl.edu.pg.eti.kask.rpg.user.repository.storage.UserAvatarInStorageRepository;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 /**
@@ -21,7 +23,9 @@ public class CreateServices implements ServletContextListener {
         DataStore dataSource = (DataStore) event.getServletContext().getAttribute("datasource");
 
         UserRepository userRepository = new UserInMemoryRepository(dataSource);
+        String avatarDir = event.getServletContext().getInitParameter("avatar.dir");
+        UserAvatarRepository userAvatarRepository = new UserAvatarInStorageRepository(avatarDir);
 
-        event.getServletContext().setAttribute("userService", new UserService(userRepository, new Pbkdf2PasswordHash()));
+        event.getServletContext().setAttribute("userService", new UserService(userRepository, userAvatarRepository, new Pbkdf2PasswordHash()));
     }
 }
