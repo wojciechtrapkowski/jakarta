@@ -4,6 +4,8 @@ import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -63,6 +65,24 @@ public class UserService {
     public void create(User user) {
         user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         repository.create(user);
+    }
+
+    public void updateAvatar(UUID id, InputStream is) {
+        repository.find(id).ifPresent(user -> {
+            try {
+                user.setAvatar(is.readAllBytes());
+                repository.update(user);
+            } catch (IOException ex) {
+                throw new IllegalStateException(ex);
+            }
+        });
+    }
+
+    public void deleteAvatar(UUID id) {
+        repository.find(id).ifPresent(user -> {
+            user.setAvatar(null);
+            repository.update(user);
+        });
     }
 
     /**

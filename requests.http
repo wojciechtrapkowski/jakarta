@@ -6,3 +6,22 @@ GET http://localhost:9080/simple-rpg/api/users/123e4567-e89b-12d3-a456-426614174
 
 ### Get one user by its UUID - Bob UUID
 GET http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197
+
+### Create user (bob) avatar
+
+PUT http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="sigrid.png'
+
+< simple-rpg/src/main/resources/pl/edu/pg/eti/kask/rpg/configuration/avatar/zereni.png
+--boundary--
+
+### Get user (bob) avatar
+
+GET http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar
+
+###  Remove user (bob) avatar
+
+DELETE http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar

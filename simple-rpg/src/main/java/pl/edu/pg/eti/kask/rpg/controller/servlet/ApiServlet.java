@@ -49,6 +49,9 @@ public class ApiServlet extends HttpServlet {
         public static final Pattern USERS = Pattern.compile("/users/?");
 
         public static final Pattern USER = Pattern.compile("/users/(%s)".formatted(UUID.pattern()));
+
+        public static final Pattern USER_AVATAR = Pattern.compile("/users/(%s)/avatar".formatted(UUID.pattern()));
+
     }
 
     /**
@@ -93,6 +96,14 @@ public class ApiServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
                 return;
+            } else if (path.matches(Patterns.USER_AVATAR.pattern())) {
+                // Could be dynamic but atm we support only one format.
+                response.setContentType("image/png");
+                UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
+                byte[] portrait = userController.getUserAvatar(uuid);
+                response.setContentLength(portrait.length);
+                response.getOutputStream().write(portrait);
+                return;
             }
         }
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -102,6 +113,11 @@ public class ApiServlet extends HttpServlet {
         String path = parseRequestPath(request);
         String servletPath = request.getServletPath();
         if (Paths.API.equals(servletPath)) {
+            if (path.matches(Patterns.USER_AVATAR.pattern())) {
+                UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
+                userController.putUserAvatar(uuid, request.getPart("avatar").getInputStream());
+                return;
+            }
         }
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
@@ -112,6 +128,11 @@ public class ApiServlet extends HttpServlet {
         String path = parseRequestPath(request);
         String servletPath = request.getServletPath();
         if (Paths.API.equals(servletPath)) {
+            if (path.matches(Patterns.USER_AVATAR.pattern())) {
+                UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
+                userController.deleteUserAvatar(uuid);
+                return;
+            }
         }
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
