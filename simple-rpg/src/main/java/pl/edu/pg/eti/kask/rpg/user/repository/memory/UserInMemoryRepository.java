@@ -1,5 +1,8 @@
 package pl.edu.pg.eti.kask.rpg.user.repository.memory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import pl.edu.pg.eti.kask.rpg.datastore.component.DataStore;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
@@ -11,6 +14,7 @@ import java.util.UUID;
 /**
  * Repository for User entity. Repositories should be used in business layer (e.g.: in services).
  */
+@RequestScoped
 public class UserInMemoryRepository implements UserRepository {
 
     /**
@@ -21,6 +25,7 @@ public class UserInMemoryRepository implements UserRepository {
     /**
      * @param store data store
      */
+    @Inject
     public UserInMemoryRepository(DataStore store) {
         this.store = store;
     }

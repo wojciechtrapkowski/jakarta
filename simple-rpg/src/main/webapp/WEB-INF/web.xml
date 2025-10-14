@@ -5,18 +5,6 @@
          version="6.0"
          metadata-complete="false">
 
-    <listener>
-        <listener-class>pl.edu.pg.eti.kask.rpg.configuration.listener.CreateDataSource</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>pl.edu.pg.eti.kask.rpg.configuration.listener.CreateServices</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>pl.edu.pg.eti.kask.rpg.configuration.listener.CreateControllers</listener-class>
-    </listener>
-
     <context-param>
         <param-name>avatar.dir</param-name>
         <param-value>/Users/wojtektrapkowski/studia/semestr_7/narzedzia_i_aplikacje_jakarta/simple-rpg/avatars</param-value>

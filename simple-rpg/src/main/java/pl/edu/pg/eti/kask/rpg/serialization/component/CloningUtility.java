@@ -1,5 +1,8 @@
 package pl.edu.pg.eti.kask.rpg.serialization.component;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 
@@ -18,6 +21,7 @@ import java.io.Serializable;
  * without external libraries is serialization mechanism.
  */
 @Log
+@Dependent
 public class CloningUtility {
 
     /**

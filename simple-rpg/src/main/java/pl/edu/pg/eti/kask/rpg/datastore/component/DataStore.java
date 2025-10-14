@@ -1,5 +1,8 @@
 package pl.edu.pg.eti.kask.rpg.datastore.component;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.serialization.component.CloningUtility;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
  * usage.
  */
 @Log
+@ApplicationScoped
+@NoArgsConstructor(force = true)
 public class DataStore {
     /**
      * Set of all users.
@@ -32,6 +37,7 @@ public class DataStore {
     /**
      * @param cloningUtility component used for creating deep copies
      */
+    @Inject
     public DataStore(CloningUtility cloningUtility) {
         this.cloningUtility = cloningUtility;
     }

@@ -1,5 +1,10 @@
 package pl.edu.pg.eti.kask.rpg.user.repository.storage;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserAvatarRepository;
 
 import java.io.IOException;
@@ -7,18 +12,18 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.UUID;
 
+@Dependent
 public class UserAvatarInStorageRepository implements UserAvatarRepository {
     private final Path avatarDir;
 
-    public UserAvatarInStorageRepository(String avatarDirPath) {
-        System.out.println(avatarDirPath);
-
-        this.avatarDir = Paths.get(avatarDirPath);
-        if (!Files.exists(avatarDir)) {
+    @Inject
+    public UserAvatarInStorageRepository(@Named("avatarDir") String avatarDir) {
+        this.avatarDir = Paths.get(avatarDir);
+        if (!Files.exists(this.avatarDir)) {
             try {
-                Files.createDirectories(avatarDir);
+                Files.createDirectories(this.avatarDir);
             } catch (IOException e) {
-
+                System.err.println("Cannot create avatar directory: " + e.getMessage());
             }
 
         }

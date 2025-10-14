@@ -1,5 +1,8 @@
 package pl.edu.pg.eti.kask.rpg.user.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -15,6 +18,8 @@ import java.util.UUID;
 /**
  * Service layer for all business actions regarding user entity.
  */
+@ApplicationScoped
+@NoArgsConstructor(force = true)
 public class UserService {
 
     /**
@@ -28,6 +33,7 @@ public class UserService {
      */
     private final Pbkdf2PasswordHash passwordHash;
 
+    @Inject
     public UserService(UserRepository userRepository, UserAvatarRepository userAvatarRepository, Pbkdf2PasswordHash passwordHash) {
         this.userRepository = userRepository;
         this.userAvatarRepository = userAvatarRepository;

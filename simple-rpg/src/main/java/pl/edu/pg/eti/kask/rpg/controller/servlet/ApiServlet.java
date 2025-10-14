@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.controller.servlet;
 
+import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -24,8 +25,7 @@ import java.util.regex.Pattern;
 })
 @MultipartConfig(maxFileSize = 200 * 1024)
 public class ApiServlet extends HttpServlet {
-
-    private UserController userController;
+    private final UserController userController;
 
 
     /**
@@ -61,6 +61,11 @@ public class ApiServlet extends HttpServlet {
      */
     private final Jsonb jsonb = JsonbBuilder.create();
 
+    @Inject
+    public ApiServlet(UserController userController) {
+        this.userController = userController;
+    }
+
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getMethod().equals("PATCH")) {
@@ -68,12 +73,6 @@ public class ApiServlet extends HttpServlet {
         } else {
             super.service(request, response);
         }
-    }
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        userController = (UserController) getServletContext().getAttribute("userController");
     }
 
     @SuppressWarnings("RedundantThrows")

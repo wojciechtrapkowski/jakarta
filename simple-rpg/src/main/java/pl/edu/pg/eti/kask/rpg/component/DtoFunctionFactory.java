@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.component;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import pl.edu.pg.eti.kask.rpg.user.dto.GetUserResponse;
 import pl.edu.pg.eti.kask.rpg.user.dto.GetUsersResponse;
 import pl.edu.pg.eti.kask.rpg.user.dto.PutUserRequest;
@@ -12,6 +13,7 @@ import java.util.function.Function;
  * Factor for creating {@link Function} implementation for converting between various objects used in different layers.
  * Instead of injecting multiple function objects single factory is injected.
  */
+@ApplicationScoped
 public class DtoFunctionFactory {
     /**
      * Returns a function to convert a {@link PutUserRequest} to a {@link User}.
