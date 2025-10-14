@@ -19,6 +19,6 @@
 
     <context-param>
         <param-name>avatar.dir</param-name>
-        <param-value>avatar</param-value>
+        <param-value>/Users/wojtektrapkowski/studia/semestr_7/narzedzia_i_aplikacje_jakarta/simple-rpg/avatars</param-value>
     </context-param>
 </web-app>
