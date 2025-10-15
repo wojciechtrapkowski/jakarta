@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
 
-@RequestScoped
+// It doesn't store any request based data.
+@ApplicationScoped
 public class SimpleUserController implements UserController {
 
     private final UserService userService;

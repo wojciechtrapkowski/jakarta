@@ -19,4 +19,6 @@ public interface UserRepository extends Repository<User, UUID> {
      */
     Optional<User> findByLogin(String login);
 
+
+
 }

@@ -1,16 +1,12 @@
 package pl.edu.pg.eti.kask.rpg.user.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,5 +39,6 @@ public class User implements Serializable {
 
     private String email;
 
-    // In the future, add List<Review> reviews
+    @Builder.Default
+    private List<Review> reviews = new ArrayList<>();
 }

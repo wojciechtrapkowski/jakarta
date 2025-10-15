@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.UUID;
 
-@Dependent
+@ApplicationScoped
 public class UserAvatarInStorageRepository implements UserAvatarRepository {
     private final Path avatarDir;
 

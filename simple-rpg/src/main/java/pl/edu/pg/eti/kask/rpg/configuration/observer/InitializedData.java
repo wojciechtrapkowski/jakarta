@@ -6,10 +6,16 @@ import jakarta.enterprise.context.control.RequestContextController;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
+import pl.edu.pg.eti.kask.rpg.game.entity.Game;
+import pl.edu.pg.eti.kask.rpg.game.entity.GameType;
+import pl.edu.pg.eti.kask.rpg.game.service.GameService;
+import pl.edu.pg.eti.kask.rpg.review.entity.Review;
+import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -24,6 +30,8 @@ public class InitializedData {
      * User service.
      */
     private final UserService userService;
+    private final ReviewService reviewService;
+    private final GameService   gameService;
 
     /**
      * The CDI container provides a built-in instance of {@link RequestContextController} that is dependent scoped for
@@ -36,8 +44,10 @@ public class InitializedData {
      * @param userService user service
      */
     @Inject
-    public InitializedData(UserService userService, RequestContextController requestContextController) {
+    public InitializedData(UserService userService, ReviewService reviewService, GameService gameService, RequestContextController requestContextController) {
         this.userService = userService;
+        this.reviewService = reviewService;
+        this.gameService = gameService;
         this.requestContextController = requestContextController;
     }
 
@@ -98,6 +108,77 @@ public class InitializedData {
         userService.create(kevin);
         userService.create(alice);
         userService.create(bob);
+
+        Game dragonQuest = Game.builder()
+                .id(UUID.randomUUID())
+                .name("Dragon Quest XI")
+                .type(GameType.RPG)
+                .dateOfRelease(LocalDate.of(2017, 7, 29))
+                .build();
+
+        Game witcher3 = Game.builder()
+                .id(UUID.randomUUID())
+                .name("The Witcher 3: Wild Hunt")
+                .type(GameType.RPG)
+                .dateOfRelease(LocalDate.of(2015, 5, 19))
+                .build();
+
+
+        Game cyberpunk = Game.builder()
+                .id(UUID.randomUUID())
+                .name("Cyberpunk 2077")
+                .type(GameType.ACTION_RPG)
+                .dateOfRelease(LocalDate.of(2020, 12, 10))
+                .build();
+
+        gameService.create(dragonQuest);
+        gameService.create(witcher3);
+        gameService.create(cyberpunk);
+
+        var review1 = Review.builder()
+                .id(UUID.randomUUID())
+                .description("Great gameplay and stunning graphics!")
+                .dateOfCreation(LocalDate.now().minusDays(5))
+                .mark(9.5)
+                .user(kevin)
+                .game(dragonQuest)
+                .build();
+
+        var review2 = Review.builder()
+                .id(UUID.randomUUID())
+                .description("Very immersive story, loved the characters.")
+                .dateOfCreation(LocalDate.now().minusDays(3))
+                .mark(8.7)
+                .user(alice)
+                .game(witcher3)
+                .build();
+
+        var review3 = Review.builder()
+                .id(UUID.randomUUID())
+                .description("Not bad, but a bit repetitive after some time.")
+                .dateOfCreation(LocalDate.now().minusDays(1))
+                .mark(6.8)
+                .user(bob)
+                .game(cyberpunk)
+                .build();
+
+        reviewService.create(review1);
+        reviewService.create(review2);
+        reviewService.create(review3);
+
+        // Print
+        System.out.println("[DEBUG] Initialized database with some example values.");
+        for (User user : userService.findAll()) {
+            System.out.println(user);
+        }
+        for (Review review : reviewService.findAll()) {
+            System.out.println(review);
+        }
+        for (Game game : gameService.findAll()) {
+            System.out.println(game);
+        }
+
+
 
         requestContextController.deactivate();
     }

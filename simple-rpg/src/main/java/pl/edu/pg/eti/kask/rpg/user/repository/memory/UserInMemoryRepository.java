@@ -14,7 +14,8 @@ import java.util.UUID;
 /**
  * Repository for User entity. Repositories should be used in business layer (e.g.: in services).
  */
-@RequestScoped
+// Everything is synchronized in DataStore, so we can use ApplicationScoped here.
+@ApplicationScoped
 public class UserInMemoryRepository implements UserRepository {
 
     /**

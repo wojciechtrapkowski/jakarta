@@ -1,11 +1,28 @@
 package pl.edu.pg.eti.kask.rpg.game.entity;
 
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import pl.edu.pg.eti.kask.rpg.review.entity.Review;
+
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-public class Game {
-    String name;
-    LocalDate dateOfRelease;
-    GameType type;
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+@EqualsAndHashCode
+public class Game implements Serializable {
+    private UUID id;
+    private String name;
+    private LocalDate dateOfRelease;
+    private GameType type;
 
-    // In the future, add List<Review> reviews
+    @Builder.Default
+    private List<Review> reviews = new ArrayList<>();
 }
