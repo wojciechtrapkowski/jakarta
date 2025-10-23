@@ -40,8 +40,8 @@ public class GameInMemoryRepository implements GameRepository {
     }
 
     @Override
-    public void delete(Game game) {
-        throw new UnsupportedOperationException("Not implemented.");
+    public void delete(UUID gameId) {
+        store.deleteGame(gameId);
     }
 
     @Override

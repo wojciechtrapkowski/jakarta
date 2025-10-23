@@ -24,6 +24,6 @@ public class Review implements Serializable {
     private LocalDate dateOfCreation;
     private double mark;
 
-    private Game game;
-    private User user;
+    private UUID gameId;
+    private UUID userId;
 }

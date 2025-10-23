@@ -9,10 +9,7 @@ import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.serialization.component.CloningUtility;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -95,6 +92,7 @@ public class DataStore {
         if (games.stream().anyMatch(game -> game.getId().equals(value.getId()))) {
             throw new IllegalArgumentException("The game id \"%s\" is not unique".formatted(value.getId()));
         }
+
         games.add(cloningUtility.clone(value));
     }
 
@@ -104,6 +102,17 @@ public class DataStore {
         } else {
             throw new IllegalArgumentException("The game with id \"%s\" does not exist".formatted(value.getId()));
         }
+    }
+
+    public synchronized void deleteGame(UUID id) throws IllegalArgumentException {
+        List<UUID> toDelete = reviews.stream()
+                .filter(review -> Objects.equals(review.getGameId(), id))
+                .map(Review::getId)
+                .toList();
+
+        toDelete.forEach(this::deleteReview);
+
+        games.removeIf(game -> game.getId().equals(id));
     }
 
     public synchronized List<Review> findAllReviews() {
@@ -118,22 +127,19 @@ public class DataStore {
         }
 
         User user = users.stream()
-                .filter(u -> u.getId().equals(value.getUser().getId()))
+                .filter(u -> u.getId().equals(value.getUserId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Game game = games.stream()
-                .filter(g -> g.getId().equals(value.getGame().getId()))
+                .filter(g -> g.getId().equals(value.getGameId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
 
         Review clonedReview = cloningUtility.clone(value);
 
-        user.getReviews().add(clonedReview);
-        game.getReviews().add(clonedReview);
-
-        clonedReview.setUser(user);
-        clonedReview.setGame(game);
+        user.getReviews().add(clonedReview.getId());
+        game.getReviews().add(clonedReview.getId());
 
         reviews.add(clonedReview);
     }
@@ -144,5 +150,13 @@ public class DataStore {
         } else {
             throw new IllegalArgumentException("The user with id \"%s\" does not exist".formatted(value.getId()));
         }
+    }
+
+    public synchronized void deleteReview(UUID id) throws IllegalArgumentException {
+        Review review = reviews.stream().filter(r -> r.getId().equals(id)).findFirst().orElseThrow();
+        games.stream().filter(g -> g.getReviews().contains(id)).findFirst().orElseThrow().getReviews().remove(id);
+        users.stream().filter(u -> u.getReviews().contains(id)).findFirst().orElseThrow().getReviews().remove(id);
+
+        reviews.remove(review);
     }
 }

@@ -34,13 +34,8 @@ public interface Repository<E, K> {
      * @param entity object to be saved
      */
     void create(E entity);
-
-    /**
-     * Delete object from the data store.
-     *
-     * @param entity object to be deleted
-     */
-    void delete(E entity);
+    
+    void delete(K id);
 
     /**
      * Update existing object in the data store.

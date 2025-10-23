@@ -21,15 +21,23 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public Optional<Game> find(UUID id) {
-        return gameRepository.find(id);
-    }
-
     public List<Game> findAll() {
         return gameRepository.findAll();
     }
 
     public void create(Game game) {
         gameRepository.create(game);
+    }
+
+    public Optional<Game> find(UUID id) {
+        return gameRepository.find(id);
+    }
+
+    public void update(Game game) {
+        gameRepository.update(game);
+    }
+
+    public void delete(UUID gameId) {
+        gameRepository.delete(gameId);
     }
 }

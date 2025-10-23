@@ -40,8 +40,8 @@ public class ReviewInMemoryRepository implements ReviewRepository {
     }
 
     @Override
-    public void delete(Review review) {
-        throw new UnsupportedOperationException("Not implemented.");
+    public void delete(UUID reviewId) {
+        store.deleteReview(reviewId);
     }
 
     @Override

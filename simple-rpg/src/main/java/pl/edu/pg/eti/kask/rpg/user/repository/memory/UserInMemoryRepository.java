@@ -49,7 +49,7 @@ public class UserInMemoryRepository implements UserRepository {
     }
 
     @Override
-    public void delete(User entity) {
+    public void delete(UUID userId) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

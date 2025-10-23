@@ -23,15 +23,23 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-    public Optional<Review> find(UUID id) {
-        return reviewRepository.find(id);
-    }
-
     public List<Review> findAll() {
         return reviewRepository.findAll();
     }
 
     public void create(Review review) {
         reviewRepository.create(review);
+    }
+
+    public Optional<Review> find(UUID id) {
+        return reviewRepository.find(id);
+    }
+
+    public void update(Review review) {
+        reviewRepository.update(review);
+    }
+
+    public void delete(UUID reviewId) {
+        reviewRepository.delete(reviewId);
     }
 }

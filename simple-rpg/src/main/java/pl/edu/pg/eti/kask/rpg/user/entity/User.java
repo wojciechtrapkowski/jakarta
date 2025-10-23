@@ -40,5 +40,5 @@ public class User implements Serializable {
     private String email;
 
     @Builder.Default
-    private List<Review> reviews = new ArrayList<>();
+    private List<UUID> reviews = new ArrayList<>();
 }

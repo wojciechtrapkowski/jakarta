@@ -140,8 +140,8 @@ public class InitializedData {
                 .description("Great gameplay and stunning graphics!")
                 .dateOfCreation(LocalDate.now().minusDays(5))
                 .mark(9.5)
-                .user(kevin)
-                .game(dragonQuest)
+                .userId(kevin.getId())
+                .gameId(dragonQuest.getId())
                 .build();
 
         var review2 = Review.builder()
@@ -149,8 +149,8 @@ public class InitializedData {
                 .description("Very immersive story, loved the characters.")
                 .dateOfCreation(LocalDate.now().minusDays(3))
                 .mark(8.7)
-                .user(alice)
-                .game(witcher3)
+                .userId(alice.getId())
+                .gameId(witcher3.getId())
                 .build();
 
         var review3 = Review.builder()
@@ -158,8 +158,8 @@ public class InitializedData {
                 .description("Not bad, but a bit repetitive after some time.")
                 .dateOfCreation(LocalDate.now().minusDays(1))
                 .mark(6.8)
-                .user(bob)
-                .game(cyberpunk)
+                .userId(bob.getId())
+                .gameId(cyberpunk.getId())
                 .build();
 
         reviewService.create(review1);
@@ -168,6 +168,32 @@ public class InitializedData {
 
         // Print
         System.out.println("[DEBUG] Initialized database with some example values.");
+        for (User user : userService.findAll()) {
+            System.out.println(user);
+        }
+        for (Review review : reviewService.findAll()) {
+            System.out.println(review);
+        }
+        for (Game game : gameService.findAll()) {
+            System.out.println(game);
+        }
+
+        // Remove game
+        gameService.delete(witcher3.getId());
+        System.out.println("[DEBUG] Removed game.");
+        for (User user : userService.findAll()) {
+            System.out.println(user);
+        }
+        for (Review review : reviewService.findAll()) {
+            System.out.println(review);
+        }
+        for (Game game : gameService.findAll()) {
+            System.out.println(game);
+        }
+
+        // Remove review
+        reviewService.delete(review1.getId());
+        System.out.println("[DEBUG] Removed review.");
         for (User user : userService.findAll()) {
             System.out.println(user);
         }

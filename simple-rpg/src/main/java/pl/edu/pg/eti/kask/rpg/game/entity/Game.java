@@ -24,5 +24,5 @@ public class Game implements Serializable {
     private GameType type;
 
     @Builder.Default
-    private List<Review> reviews = new ArrayList<>();
+    private List<UUID> reviews = new ArrayList<>();
 }
