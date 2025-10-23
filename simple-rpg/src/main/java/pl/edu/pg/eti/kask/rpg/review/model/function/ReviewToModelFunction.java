@@ -18,6 +18,8 @@ public class ReviewToModelFunction implements Function<Review, ReviewModel> {
                 .description(review.getDescription())
                 .mark(review.getMark())
                 .dateOfCreation(review.getDateOfCreation())
+                .gameId(review.getGameId())
+                .userId(review.getUserId())
                 .build();
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="jakarta.faces.html"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:f="jakarta.faces.core"
+        template="/template/main.xhtml">
+
+    <!-- Metadata to accept 'id' as a view param and initialize the bean -->
+    <f:metadata>
+        <f:viewParam name="id" value="#{reviewView.id}" required="true"/>
+        <f:viewAction action="#{reviewView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <article>
+            <header>
+                <h2>Review Details</h2>
+            </header>
+
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-4">User:</div>
+                    <div class="col-8">
+                        <h:outputText value="#{reviewView.review.userName}"/>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-4">Description:</div>
+                    <div class="col-8">
+                        <h:outputText value="#{reviewView.review.description}"/>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-4">Mark:</div>
+                    <div class="col-8">
+                        <h:outputText value="#{reviewView.review.mark}"/>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-4">Date:</div>
+                    <div class="col-8">
+                        <h:outputText value="#{reviewView.review.dateOfCreation}"/>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col">
+                        <h:link outcome="/game/game_view.xhtml" value="Back to Game">
+                            <f:param name="id" value="#{reviewView.review.gameId}"/>
+                        </h:link>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </ui:define>
+
+</ui:composition>

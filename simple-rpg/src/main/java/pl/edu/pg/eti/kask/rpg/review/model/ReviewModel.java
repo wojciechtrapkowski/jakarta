@@ -19,5 +19,7 @@ public class ReviewModel {
     private LocalDate dateOfCreation;
     private double mark;
 
+    private UUID gameId;
+    private UUID userId;
     private String userName; // resolved from userId for display
 }
