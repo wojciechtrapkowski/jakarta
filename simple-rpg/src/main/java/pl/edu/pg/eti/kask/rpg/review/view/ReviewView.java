@@ -58,7 +58,10 @@ public class ReviewView implements Serializable {
         Optional<Review> review = reviewService.find(id);
         if (review.isPresent()) {
             this.review = factory.reviewToModel().apply(review.get());
-            return;
+            String username = userService.find(review.get().getUserId())
+                    .map(User::getName)
+                    .orElse("Unknown user");
+            this.review.setUserName(username);
         } else {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Game not found");
         }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewAction action="#{reviewCreateView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <article>
+            <header><h2>Add New Review</h2></header>
+            <h:form styleClass="container">
+
+                <!-- Game selection dropdown -->
+                <!-- Here we should use converter, but I don't see any point - we work on UUIDS. -->
+                <div class="row mb-2">
+                    <div class="col-4 p-2">
+                        <h:selectOneMenu id="game" value="#{reviewCreateView.review.gameId}" styleClass="form-select">
+                            <f:selectItems value="#{reviewCreateView.games}" var="game"
+                                           itemValue="#{game.id}" itemLabel="#{game.name}"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel for="game" value="Game:" styleClass="form-label"/>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="row mb-2">
+                    <div class="col-6 p-2">
+                        <h:inputTextarea id="description" value="#{reviewCreateView.review.description}" styleClass="form-control" rows="4"/>
+                        <h:outputLabel for="description" value="Description:" styleClass="form-label"/>
+                    </div>
+                </div>
+
+                <!-- Mark -->
+                <div class="row mb-2">
+                    <div class="col-2 p-2">
+                        <h:inputText id="mark" value="#{reviewCreateView.review.mark}" styleClass="form-control"/>
+                        <h:outputLabel for="mark" value="Mark:" styleClass="form-label"/>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="row mt-3">
+                    <div class="col-2 p-2 text-center">
+                        <h:commandButton styleClass="btn btn-primary" value="Save" action="#{reviewCreateView.saveAction()}"/>
+                    </div>
+                    <div class="col-2 p-2 text-center">
+                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="Reset"/>
+                    </div>
+                </div>
+
+            </h:form>
+        </article>
+    </ui:define>
+</ui:composition>

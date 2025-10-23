@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.review.model;
 
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -13,14 +14,10 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class ReviewModel {
-    private UUID id;
+public class ReviewCreateModel {
     private String description;
-    private LocalDate dateOfCreation;
     private double mark;
-
     private UUID gameId;
     private UUID userId;
-
-    private String userName; // resolved from userId for display
+    private LocalDate dateOfCreation;
 }

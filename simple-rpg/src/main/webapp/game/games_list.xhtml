@@ -11,6 +11,13 @@
         <article class="text--justified">
             <header><h2>Games</h2></header>
 
+
+            <div class="mb-3">
+                <h:link outcome="/review/review_create.xhtml" styleClass="btn btn-success" value="Create Review">
+
+                </h:link>
+            </div>
+
             <h:dataTable value="#{gamesList.games.games}" var="game"
                          styleClass="table align-middle mb-0 bg-white" headerClass="bg-light">
                 <h:column>
@@ -24,13 +31,6 @@
                         <f:param name="id" value="#{game.id}"/>
                     </h:link>
                 </h:column>
-
-<!--                <h:column>-->
-<!--                    <f:facet name="header">Edit</f:facet>-->
-<!--                    <h:link outcome="/character/character_edit.xhtml" value="Edit">-->
-<!--                        <f:param name="id" value="#{character.id}"/>-->
-<!--                    </h:link>-->
-<!--                </h:column>-->
 
                 <h:column>
                     <f:facet name="header">Delete</f:facet>

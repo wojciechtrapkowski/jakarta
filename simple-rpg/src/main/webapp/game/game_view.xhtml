@@ -41,6 +41,7 @@
             </div>
 
             <h3>Reviews</h3>
+
             <h:dataTable value="#{gameView.game.reviews}" var="review" styleClass="table">
                 <h:column>
                     <f:facet name="header">User</f:facet>
@@ -53,6 +54,12 @@
                 <h:column>
                     <f:facet name="header">View</f:facet>
                     <h:link outcome="/review/review_view.xhtml" value="View">
+                        <f:param name="id" value="#{review.id}"/>
+                    </h:link>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Edit</f:facet>
+                    <h:link outcome="/review/review_edit.xhtml" value="Edit">
                         <f:param name="id" value="#{review.id}"/>
                     </h:link>
                 </h:column>
