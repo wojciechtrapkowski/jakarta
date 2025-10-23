@@ -48,6 +48,13 @@
             <version>3.24.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>mdb-ui-kit</artifactId>
+            <version>6.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

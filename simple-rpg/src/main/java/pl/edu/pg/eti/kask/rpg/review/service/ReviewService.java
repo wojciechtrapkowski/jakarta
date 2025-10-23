@@ -27,6 +27,12 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
+    public List<Review> findAllForGame(UUID gameId) {
+        List<Review> reviews = reviewRepository.findAll();
+        return reviews.stream()
+                .filter(review -> review.getGameId().equals(gameId))
+                .toList();
+    }
     public void create(Review review) {
         reviewRepository.create(review);
     }
