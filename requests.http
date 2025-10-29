@@ -25,3 +25,66 @@ GET http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4
 ###  Remove user (bob) avatar
 
 DELETE http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar
+
+### Get all games
+
+GET http://localhost:9080/simple-rpg/api/games
+
+### Get specific game
+
+GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197
+
+### Update game!
+
+PATCH http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197
+Content-Type: application/json
+
+{
+    "name": "Dragon Questt!"
+}
+
+### Delete game!
+
+DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197
+
+
+### DELETE NEW GAME
+DELETE  http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
+
+### Create a new game
+PUT http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
+Content-Type: application/json
+
+{
+  "name": "My New RPG",
+  "dateOfRelease": "2025-10-29",
+  "type": "RPG"
+}
+
+### Get all reviews for a game
+GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews
+
+### Get specific review
+GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+
+### Create a new review
+PUT http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Content-Type: application/json
+
+{
+  "description": "Awesome game, loved it!",
+  "mark": 9.5,
+  "userId": "ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197"
+}
+
+### Update review
+PATCH http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Content-Type: application/json
+
+{
+  "description": "Actually, I changed my mind, it's amazing!"
+}
+
+### Delete review
+
+DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111

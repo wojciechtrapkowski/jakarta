@@ -41,6 +41,11 @@ public class ReviewService {
         return reviewRepository.find(id);
     }
 
+    public Optional<Review> findForGame(UUID gameId, UUID reviewId) {
+        return reviewRepository.find(reviewId)
+                .filter(review -> review.getGameId() != null && gameId.equals(review.getGameId()));
+    }
+
     public void update(Review review) {
         reviewRepository.update(review);
     }

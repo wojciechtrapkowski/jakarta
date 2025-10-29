@@ -110,7 +110,7 @@ public class InitializedData {
         userService.create(bob);
 
         Game dragonQuest = Game.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197"))
                 .name("Dragon Quest XI")
                 .type(GameType.RPG)
                 .dateOfRelease(LocalDate.of(2017, 7, 29))
@@ -136,7 +136,7 @@ public class InitializedData {
         gameService.create(cyberpunk);
 
         var review1 = Review.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4117"))
                 .description("Great gameplay and stunning graphics!")
                 .dateOfCreation(LocalDate.now().minusDays(5))
                 .mark(9.5)
@@ -190,19 +190,19 @@ public class InitializedData {
         for (Game game : gameService.findAll()) {
             System.out.println(game);
         }
-
-        // Remove review
-        reviewService.delete(review1.getId());
-        System.out.println("[DEBUG] Removed review.");
-        for (User user : userService.findAll()) {
-            System.out.println(user);
-        }
-        for (Review review : reviewService.findAll()) {
-            System.out.println(review);
-        }
-        for (Game game : gameService.findAll()) {
-            System.out.println(game);
-        }
+//
+//        // Remove review
+//        reviewService.delete(review1.getId());
+//        System.out.println("[DEBUG] Removed review.");
+//        for (User user : userService.findAll()) {
+//            System.out.println(user);
+//        }
+//        for (Review review : reviewService.findAll()) {
+//            System.out.println(review);
+//        }
+//        for (Game game : gameService.findAll()) {
+//            System.out.println(game);
+//        }
 
 
 
