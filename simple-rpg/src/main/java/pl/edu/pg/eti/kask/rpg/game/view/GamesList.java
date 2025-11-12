@@ -39,8 +39,8 @@ public class GamesList {
         return games;
     }
 
-    public String deleteAction(GamesModel.Game character) {
-        service.delete(character.getId());
+    public String deleteAction(GamesModel.Game game) {
+        service.delete(service.find(game.getId()).orElseThrow());
         return "games_list?faces-redirect=true";
     }
 }

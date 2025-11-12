@@ -57,6 +57,9 @@ public class GameRestController implements GameController {
     @Override
     public void createGame(UUID id, PutGameRequest request) {
         try {
+            if (service.find(id).isPresent()) {
+                throw new WebApplicationException(Response.Status.CONFLICT);
+            }
             service.create(factory.putGameRequest().apply(id, request));
 
             //This can be done with Response builder but requires method different return type.
@@ -106,7 +109,7 @@ public class GameRestController implements GameController {
     @Override
     public void deleteGame(UUID id) {
         service.find(id).ifPresentOrElse(
-                entity -> service.delete(id),
+                entity -> service.delete(entity),
                 () -> {
                     throw new NotFoundException();
                 }

@@ -2,6 +2,7 @@ package pl.edu.pg.eti.kask.rpg.user.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
@@ -68,6 +69,7 @@ public class UserService {
      *
      * @param user new user to be saved
      */
+    @Transactional
     public void create(User user) {
         user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         userRepository.create(user);

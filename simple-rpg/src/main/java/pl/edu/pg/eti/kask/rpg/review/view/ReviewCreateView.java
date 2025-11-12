@@ -47,16 +47,30 @@ public class ReviewCreateView implements Serializable {
                 .map(game -> new GameModel(game.getId(), game.getName(), null, null, null))
                 .collect(Collectors.toList());
 
-        review.setGameId(games.get(0).getId());
+        review.setGame(gameService.find(games.get(0).getId()).orElseThrow());
     }
 
     public String saveAction() {
         review.setDateOfCreation(java.time.LocalDate.now());
 
-        // Use the first user when we don't have authentication yet.
-        review.setUserId(userService.findAll().stream().findFirst().get().getId());
+        review.setUser(userService.findAll().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No user found")));
 
-        reviewService.create(factory.createReview().apply(review));
-        return "/game/game_view.xhtml?faces-redirect=true&id=" + review.getGameId();
+        var reviewEntity = factory.createReview().apply(review);
+
+        var managedGame = gameService.find(reviewEntity.getGame().getId())
+                .orElseThrow(() -> new IllegalStateException("Game not found"));
+
+        reviewEntity.setGame(managedGame);
+
+        reviewService.create(reviewEntity);
+
+        managedGame.getReviews().add(reviewEntity);
+
+        // Reset form
+        review = new ReviewCreateModel();
+
+        return "/game/game_view.xhtml?faces-redirect=true&id=" + managedGame.getId();
     }
 }

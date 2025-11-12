@@ -1,7 +1,9 @@
 package pl.edu.pg.eti.kask.rpg.review.dto;
 
 import lombok.*;
+import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.entity.GameType;
+import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;

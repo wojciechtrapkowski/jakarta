@@ -65,7 +65,7 @@ public class GameView implements Serializable {
                     .map(review -> {
                         ReviewModel model = factory.reviewToModel().apply(review);
                         // fetch username
-                        String username = userService.find(review.getUserId())
+                        String username = userService.find(review.getUser().getId())
                                 .map(User::getName) // or getUsername()
                                 .orElse("Unknown user");
                         model.setUserName(username);
@@ -80,7 +80,7 @@ public class GameView implements Serializable {
     }
 
     public String deleteReview(UUID reviewId) {
-        reviewService.delete(reviewId);
+        reviewService.delete(reviewService.findForGame(id, reviewId).orElseThrow());
 
         return "game_view.xhtml?id=" + id + "&faces-redirect=true";
     }

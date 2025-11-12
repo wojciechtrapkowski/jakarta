@@ -15,7 +15,6 @@ public class PutReviewRequestFunction implements BiFunction<UUID, PutReviewReque
                 .id(id)
                 .description(request.getDescription())
                 .mark(request.getMark())
-                .userId(request.getUserId())
                 .dateOfCreation(LocalDate.now())
                 .build();
     }

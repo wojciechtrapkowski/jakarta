@@ -2,10 +2,10 @@ package pl.edu.pg.eti.kask.rpg.review.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
-import pl.edu.pg.eti.kask.rpg.serialization.component.CloningUtility;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
@@ -30,9 +30,11 @@ public class ReviewService {
     public List<Review> findAllForGame(UUID gameId) {
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()
-                .filter(review -> review.getGameId().equals(gameId))
+                .filter(review -> review.getGame().getId().equals(gameId))
                 .toList();
     }
+
+    @Transactional
     public void create(Review review) {
         reviewRepository.create(review);
     }
@@ -43,14 +45,16 @@ public class ReviewService {
 
     public Optional<Review> findForGame(UUID gameId, UUID reviewId) {
         return reviewRepository.find(reviewId)
-                .filter(review -> review.getGameId() != null && gameId.equals(review.getGameId()));
+                .filter(review -> review.getGame().getId() != null && gameId.equals(review.getGame().getId()));
     }
 
+    @Transactional
     public void update(Review review) {
         reviewRepository.update(review);
     }
 
-    public void delete(UUID reviewId) {
-        reviewRepository.delete(reviewId);
+    @Transactional
+    public void delete(Review review) {
+        reviewRepository.delete(review);
     }
 }

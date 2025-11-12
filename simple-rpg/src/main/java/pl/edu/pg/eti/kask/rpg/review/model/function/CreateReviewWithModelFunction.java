@@ -15,8 +15,8 @@ public class CreateReviewWithModelFunction implements Function<ReviewCreateModel
                 .id(UUID.randomUUID())
                 .description(model.getDescription())
                 .mark(model.getMark())
-                .gameId(model.getGameId())
-                .userId(model.getUserId())
+                .game(model.getGame())
+                .user(model.getUser())
                 .dateOfCreation(model.getDateOfCreation())
                 .build();
     }

@@ -18,7 +18,7 @@
                 <!-- Here we should use converter, but I don't see any point - we work on UUIDS. -->
                 <div class="row mb-2">
                     <div class="col-4 p-2">
-                        <h:selectOneMenu id="game" value="#{reviewCreateView.review.gameId}" styleClass="form-select">
+                        <h:selectOneMenu id="game" value="#{reviewCreateView.review.game.id}" styleClass="form-select">
                             <f:selectItems value="#{reviewCreateView.games}" var="game"
                                            itemValue="#{game.id}" itemLabel="#{game.name}"/>
                         </h:selectOneMenu>

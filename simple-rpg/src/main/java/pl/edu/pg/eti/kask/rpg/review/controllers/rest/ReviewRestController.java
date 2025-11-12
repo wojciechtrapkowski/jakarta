@@ -18,6 +18,7 @@ import pl.edu.pg.eti.kask.rpg.review.dto.PatchReviewRequest;
 import pl.edu.pg.eti.kask.rpg.review.dto.PutReviewRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
+import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class ReviewRestController implements ReviewController {
     private final DtoFunctionFactory factory;
 
     private final UriInfo uriInfo;
+    private final UserService userService;
 
     @Context
     private HttpServletResponse response;
@@ -38,12 +40,13 @@ public class ReviewRestController implements ReviewController {
             GameService gameService,
             ReviewService reviewService,
             DtoFunctionFactory factory,
-            @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo
-    ) {
+            @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo,
+            UserService userService) {
         this.gameService = gameService;
         this.reviewService = reviewService;
         this.factory = factory;
         this.uriInfo = uriInfo;
+        this.userService = userService;
     }
 
 
@@ -66,8 +69,13 @@ public class ReviewRestController implements ReviewController {
     @Override
     public void createReview(UUID gameId, UUID reviewId, PutReviewRequest request) {
         try {
+            if (reviewService.findForGame(gameId, reviewId).isPresent()) {
+                throw new WebApplicationException(Response.Status.CONFLICT);
+            }
+            
             Review review = factory.putReviewRequest().apply(reviewId, request);
-            review.setGameId(gameId);
+            review.setGame(gameService.find(gameId).orElseThrow(NotFoundException::new));
+            review.setUser(userService.find(request.getUserId()).orElseThrow(NotFoundException::new));
             reviewService.create(review);
 
             String location = uriInfo.getBaseUriBuilder()
@@ -104,7 +112,7 @@ public class ReviewRestController implements ReviewController {
     public void deleteReview(UUID gameId, UUID reviewId) {
 
         reviewService.findForGame(gameId, reviewId).ifPresentOrElse(
-                review -> reviewService.delete(review.getId()),
+                reviewService::delete,
                 () -> {
                     throw new NotFoundException();
                 });

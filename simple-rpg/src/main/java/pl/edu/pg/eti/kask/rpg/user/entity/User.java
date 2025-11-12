@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.user.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
@@ -21,7 +22,11 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
+@Entity
+@Table(name = "users")
 public class User implements Serializable {
+    @Id
+    @GeneratedValue
     private UUID id;
 
     private String login;
@@ -39,6 +44,6 @@ public class User implements Serializable {
 
     private String email;
 
-    @Builder.Default
-    private List<UUID> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Review> reviews = new ArrayList<>();
 }

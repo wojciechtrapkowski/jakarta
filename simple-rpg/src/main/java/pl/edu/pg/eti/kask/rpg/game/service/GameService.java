@@ -2,7 +2,9 @@ package pl.edu.pg.eti.kask.rpg.game.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.repository.api.GameRepository;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 @ApplicationScoped
 @NoArgsConstructor(force = true)
+@Log
 public class GameService {
     private final GameRepository gameRepository;
 
@@ -25,6 +28,7 @@ public class GameService {
         return gameRepository.findAll();
     }
 
+    @Transactional
     public void create(Game game) {
         gameRepository.create(game);
     }
@@ -33,11 +37,13 @@ public class GameService {
         return gameRepository.find(id);
     }
 
+    @Transactional
     public void update(Game game) {
         gameRepository.update(game);
     }
 
-    public void delete(UUID gameId) {
-        gameRepository.delete(gameId);
+    @Transactional
+    public void delete(Game game) {
+        gameRepository.delete(game);
     }
 }

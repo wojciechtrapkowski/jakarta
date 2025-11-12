@@ -66,130 +66,130 @@ public class InitializedData {
      */
     @SneakyThrows
     private void init() {
-        requestContextController.activate();
+        if (userService.findAll().size() == 0) {
+            User admin = User.builder()
+                    .id(UUID.fromString("c4804e0f-769e-4ab9-9ebe-0578fb4f00a6"))
+                    .login("admin")
+                    .name("System")
+                    .surname("Admin")
+                    .email("admin@simplerpg.example.com")
+                    .password("adminadmin")
+                    .build();
 
-        User admin = User.builder()
-                .id(UUID.fromString("c4804e0f-769e-4ab9-9ebe-0578fb4f00a6"))
-                .login("admin")
-                .name("System")
-                .surname("Admin")
-                .email("admin@simplerpg.example.com")
-                .password("adminadmin")
-                .build();
+            User kevin = User.builder()
+                    .id(UUID.fromString("81e1c2a9-7f57-439b-b53d-6db88b071e4e"))
+                    .login("kevin")
+                    .name("Kevin")
+                    .surname("Pear")
+                    .email("kevin@example.com")
+                    .password("useruser")
+                    .build();
 
-        User kevin = User.builder()
-                .id(UUID.fromString("81e1c2a9-7f57-439b-b53d-6db88b071e4e"))
-                .login("kevin")
-                .name("Kevin")
-                .surname("Pear")
-                .email("kevin@example.com")
-                .password("useruser")
-                .build();
+            User alice = User.builder()
+                    .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197"))
+                    .login("alice")
+                    .name("Alice")
+                    .surname("Grape")
+                    .email("alice@example.com")
+                    .password("useruser")
+                    .build();
 
-        User alice = User.builder()
-                .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197"))
-                .login("alice")
-                .name("Alice")
-                .surname("Grape")
-                .email("alice@example.com")
-                .password("useruser")
-                .build();
+            User bob = User.builder()
+                    .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9e1b3c7a4197"))
+                    .login("bob")
+                    .name("Bob")
+                    .surname("Tent")
+                    .email("bob@example.com")
+                    .password("useruser")
+                    .build();
 
-        User bob = User.builder()
-                .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9e1b3c7a4197"))
-                .login("bob")
-                .name("Bob")
-                .surname("Tent")
-                .email("bob@example.com")
-                .password("useruser")
-                .build();
+            userService.create(admin);
+            userService.create(kevin);
+            userService.create(alice);
+            userService.create(bob);
 
-        userService.create(admin);
-        userService.create(kevin);
-        userService.create(alice);
-        userService.create(bob);
+            Game dragonQuest = Game.builder()
+                    .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197"))
+                    .name("Dragon Quest XI")
+                    .type(GameType.RPG)
+                    .dateOfRelease(LocalDate.of(2017, 7, 29))
+                    .build();
 
-        Game dragonQuest = Game.builder()
-                .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197"))
-                .name("Dragon Quest XI")
-                .type(GameType.RPG)
-                .dateOfRelease(LocalDate.of(2017, 7, 29))
-                .build();
-
-        Game witcher3 = Game.builder()
-                .id(UUID.randomUUID())
-                .name("The Witcher 3: Wild Hunt")
-                .type(GameType.RPG)
-                .dateOfRelease(LocalDate.of(2015, 5, 19))
-                .build();
+            Game witcher3 = Game.builder()
+                    .id(UUID.randomUUID())
+                    .name("The Witcher 3: Wild Hunt")
+                    .type(GameType.RPG)
+                    .dateOfRelease(LocalDate.of(2015, 5, 19))
+                    .build();
 
 
-        Game cyberpunk = Game.builder()
-                .id(UUID.randomUUID())
-                .name("Cyberpunk 2077")
-                .type(GameType.ACTION_RPG)
-                .dateOfRelease(LocalDate.of(2020, 12, 10))
-                .build();
+            Game cyberpunk = Game.builder()
+                    .id(UUID.randomUUID())
+                    .name("Cyberpunk 2077")
+                    .type(GameType.ACTION_RPG)
+                    .dateOfRelease(LocalDate.of(2020, 12, 10))
+                    .build();
 
-        gameService.create(dragonQuest);
-        gameService.create(witcher3);
-        gameService.create(cyberpunk);
+            gameService.create(dragonQuest);
+            gameService.create(witcher3);
+            gameService.create(cyberpunk);
 
-        var review1 = Review.builder()
-                .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4117"))
-                .description("Great gameplay and stunning graphics!")
-                .dateOfCreation(LocalDate.now().minusDays(5))
-                .mark(9.5)
-                .userId(kevin.getId())
-                .gameId(dragonQuest.getId())
-                .build();
+            var review1 = Review.builder()
+                    .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4117"))
+                    .description("Great gameplay and stunning graphics!")
+                    .dateOfCreation(LocalDate.now().minusDays(5))
+                    .mark(9.5)
+                    .user(kevin)
+                    .game(dragonQuest)
+                    .build();
 
-        var review2 = Review.builder()
-                .id(UUID.randomUUID())
-                .description("Very immersive story, loved the characters.")
-                .dateOfCreation(LocalDate.now().minusDays(3))
-                .mark(8.7)
-                .userId(alice.getId())
-                .gameId(witcher3.getId())
-                .build();
+            var review2 = Review.builder()
+                    .id(UUID.randomUUID())
+                    .description("Very immersive story, loved the characters.")
+                    .dateOfCreation(LocalDate.now().minusDays(3))
+                    .mark(8.7)
+                    .user(alice)
+                    .game(witcher3)
+                    .build();
 
-        var review3 = Review.builder()
-                .id(UUID.randomUUID())
-                .description("Not bad, but a bit repetitive after some time.")
-                .dateOfCreation(LocalDate.now().minusDays(1))
-                .mark(6.8)
-                .userId(bob.getId())
-                .gameId(cyberpunk.getId())
-                .build();
+            var review3 = Review.builder()
+                    .id(UUID.randomUUID())
+                    .description("Not bad, but a bit repetitive after some time.")
+                    .dateOfCreation(LocalDate.now().minusDays(1))
+                    .mark(6.8)
+                    .user(bob)
+                    .game(cyberpunk)
+                    .build();
 
-        reviewService.create(review1);
-        reviewService.create(review2);
-        reviewService.create(review3);
+            reviewService.create(review1);
+            reviewService.create(review2);
+            reviewService.create(review3);
 
-        // Print
-        System.out.println("[DEBUG] Initialized database with some example values.");
-        for (User user : userService.findAll()) {
-            System.out.println(user);
-        }
-        for (Review review : reviewService.findAll()) {
-            System.out.println(review);
-        }
-        for (Game game : gameService.findAll()) {
-            System.out.println(game);
-        }
+            // Print
+            System.out.println("[DEBUG] Initialized database with some example values.");
+            for (User user : userService.findAll()) {
+                System.out.println(user);
+            }
+            for (Review review : reviewService.findAll()) {
+                System.out.println(review);
+            }
+            for (Game game : gameService.findAll()) {
+                System.out.println(game);
+            }
 
-        // Remove game
-        gameService.delete(witcher3.getId());
-        System.out.println("[DEBUG] Removed game.");
-        for (User user : userService.findAll()) {
-            System.out.println(user);
-        }
-        for (Review review : reviewService.findAll()) {
-            System.out.println(review);
-        }
-        for (Game game : gameService.findAll()) {
-            System.out.println(game);
-        }
+            // Remove game
+//            Game managedWitcher3 = gameService.find(witcher3.getId()).orElseThrow();
+//            gameService.delete(managedWitcher3);
+//            System.out.println("[DEBUG] Removed game.");
+//            for (User user : userService.findAll()) {
+//                System.out.println(user);
+//            }
+//            for (Review review : reviewService.findAll()) {
+//                System.out.println(review);
+//            }
+//            for (Game game : gameService.findAll()) {
+//                System.out.println(game);
+//            }
 //
 //        // Remove review
 //        reviewService.delete(review1.getId());
@@ -203,10 +203,7 @@ public class InitializedData {
 //        for (Game game : gameService.findAll()) {
 //            System.out.println(game);
 //        }
-
-
-
-        requestContextController.deactivate();
+        }
     }
 
     /**

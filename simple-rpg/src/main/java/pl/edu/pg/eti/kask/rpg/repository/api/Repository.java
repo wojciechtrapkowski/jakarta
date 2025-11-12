@@ -35,7 +35,7 @@ public interface Repository<E, K> {
      */
     void create(E entity);
     
-    void delete(K id);
+    void delete(E entity);
 
     /**
      * Update existing object in the data store.

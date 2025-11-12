@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.review.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
@@ -17,13 +18,22 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(exclude = {"game", "user"})
 @EqualsAndHashCode(exclude = {"game", "user"})
+@Entity
+@Table(name = "reviews")
 public class Review implements Serializable {
+    @Id
+    @GeneratedValue
     private UUID id;
 
     private String description;
     private LocalDate dateOfCreation;
     private double mark;
 
-    private UUID gameId;
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id")
+    private Game game;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -14,8 +14,8 @@ public class ReviewToEditModelFunction implements Function<Review, ReviewEditMod
         return ReviewEditModel.builder()
                 .description(review.getDescription())
                 .mark(review.getMark())
-                .gameId(review.getGameId())
-                .userId(review.getUserId())
+                .game(review.getGame())
+                .user(review.getUser())
                 .build();
     }
 

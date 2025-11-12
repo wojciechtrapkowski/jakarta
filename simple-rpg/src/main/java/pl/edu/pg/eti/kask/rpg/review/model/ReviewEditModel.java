@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
+import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -28,6 +29,6 @@ import java.util.UUID;
 public class ReviewEditModel {
     private String description;
     private double mark;
-    private UUID gameId;
-    private UUID userId;
+    private Game game;
+    private User user;
 }

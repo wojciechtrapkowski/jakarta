@@ -16,8 +16,8 @@ public class PatchReviewRequestFunction implements BiFunction<Review, PatchRevie
                 .id(entity.getId())
                 .description(request.getDescription() != null ? request.getDescription() : entity.getDescription())
                 .mark(request.getMark() != null ? request.getMark() : entity.getMark())
-                .gameId(entity.getGameId())
-                .userId(entity.getUserId())
+                .game(entity.getGame())
+                .user(entity.getUser())
                 .dateOfCreation(entity.getDateOfCreation())
                 .build();
     }

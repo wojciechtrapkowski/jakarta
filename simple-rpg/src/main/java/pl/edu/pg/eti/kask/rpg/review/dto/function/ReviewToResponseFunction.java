@@ -16,8 +16,8 @@ public class ReviewToResponseFunction implements Function<Review, GetReviewRespo
                 .id(review.getId())
                 .description(review.getDescription())
                 .mark(review.getMark())
-                .gameId(review.getGameId())
-                .userId(review.getUserId())
+                .gameId(review.getGame().getId())
+                .userId(review.getUser().getId())
                 .dateOfCreation(review.getDateOfCreation())
                 .build();
     }

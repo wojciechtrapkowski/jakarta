@@ -78,7 +78,7 @@ public class ReviewEditView implements Serializable {
     public String saveAction() {
         reviewService.update(factory.updateReview().apply(reviewService.find(reviewId).orElseThrow(), review));
         String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-        return "/game/game_view.xhtml?faces-redirect=true&id=" + review.getGameId();
+        return "/game/game_view.xhtml?faces-redirect=true&id=" + review.getGame().getId();
     }
 
 }
