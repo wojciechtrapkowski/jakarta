@@ -37,4 +37,6 @@ public class PutUserRequest {
     private String password;
 
     private String email;
+
+    private LocalDate accountCreatedAt;
 }

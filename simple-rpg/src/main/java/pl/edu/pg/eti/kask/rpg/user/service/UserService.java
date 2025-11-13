@@ -75,6 +75,16 @@ public class UserService {
         userRepository.create(user);
     }
 
+    @Transactional
+    public void update(User user) {
+        userRepository.update(user);
+    }
+
+    @Transactional
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
+
     public void updateAvatar(UUID id, InputStream is) {
         userRepository.find(id).ifPresent(user -> {
             try {
