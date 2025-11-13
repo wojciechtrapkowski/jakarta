@@ -117,7 +117,7 @@ public class InitializedData {
                     .name("System")
                     .surname("Admin")
                     .email("admin@simplerpg.example.com")
-                    .password(passwordHash.generate("adminadmin".toCharArray()))
+                    .password("adminadmin")
                     .roles(List.of(UserRoles.ADMIN, UserRoles.USER))
                     .build();
 
@@ -128,6 +128,7 @@ public class InitializedData {
                     .surname("Pear")
                     .email("kevin@example.com")
                     .password("useruser")
+                    .roles(List.of(UserRoles.USER))
                     .build();
 
             User alice = User.builder()
@@ -137,6 +138,7 @@ public class InitializedData {
                     .surname("Grape")
                     .email("alice@example.com")
                     .password("useruser")
+                    .roles(List.of(UserRoles.USER))
                     .build();
 
             User bob = User.builder()
@@ -146,6 +148,7 @@ public class InitializedData {
                     .surname("Tent")
                     .email("bob@example.com")
                     .password("useruser")
+                    .roles(List.of(UserRoles.USER))
                     .build();
 
             userService.create(admin);
