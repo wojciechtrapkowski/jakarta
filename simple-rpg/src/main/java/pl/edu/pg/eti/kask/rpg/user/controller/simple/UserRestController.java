@@ -1,14 +1,17 @@
 package pl.edu.pg.eti.kask.rpg.user.controller.simple;
 
+import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.review.controllers.api.ReviewController;
@@ -20,8 +23,10 @@ import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Path("")
+@Log
 public class UserRestController implements UserController {
 
     private final UserService userService;
@@ -43,8 +48,12 @@ public class UserRestController implements UserController {
 
     @Override
     public GetUsersResponse getUsers() {
-
-        return factory.usersToResponse().apply(userService.findAll());
+        try {
+            return factory.usersToResponse().apply(userService.findAll());
+        } catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
+        }
     }
 
     @Override

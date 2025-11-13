@@ -39,11 +39,16 @@ public class User implements Serializable {
 
     private LocalDate accountCreatedAt;
 
-    @ToString.Exclude
     private String password;
 
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
+
+    @CollectionTable(name = "users__roles", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
+
 }
