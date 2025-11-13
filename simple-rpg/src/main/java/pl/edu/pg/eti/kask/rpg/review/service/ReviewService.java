@@ -33,13 +33,13 @@ public class ReviewService {
     }
 
     public List<Review> findAllForGame(UUID gameId) {
+
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()
                 .filter(review -> review.getGame().getId().equals(gameId))
                 .toList();
     }
 
-    @Transactional
     public void create(Review review) {
         reviewRepository.create(review);
     }
@@ -53,12 +53,10 @@ public class ReviewService {
                 .filter(review -> review.getGame().getId() != null && gameId.equals(review.getGame().getId()));
     }
 
-    @Transactional
     public void update(Review review) {
         reviewRepository.update(review);
     }
 
-    @Transactional
     public void delete(Review review) {
         reviewRepository.delete(review);
     }
