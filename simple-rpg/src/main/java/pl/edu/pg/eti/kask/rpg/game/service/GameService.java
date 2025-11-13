@@ -1,5 +1,7 @@
 package pl.edu.pg.eti.kask.rpg.game.service;
 
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -13,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 @Log
 public class GameService {
@@ -28,7 +31,6 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    @Transactional
     public void create(Game game) {
         gameRepository.create(game);
     }
@@ -37,12 +39,10 @@ public class GameService {
         return gameRepository.find(id);
     }
 
-    @Transactional
     public void update(Game game) {
         gameRepository.update(game);
     }
 
-    @Transactional
     public void delete(Game game) {
         gameRepository.delete(game);
     }

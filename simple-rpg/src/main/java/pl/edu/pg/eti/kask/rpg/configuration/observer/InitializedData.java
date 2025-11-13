@@ -1,54 +1,79 @@
 package pl.edu.pg.eti.kask.rpg.configuration.observer;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.DeclareRoles;
+import jakarta.annotation.security.RunAs;
+import jakarta.ejb.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.control.RequestContextController;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
+import jakarta.security.enterprise.SecurityContext;
+import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.entity.GameType;
 import pl.edu.pg.eti.kask.rpg.game.service.GameService;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
+import pl.edu.pg.eti.kask.rpg.user.entity.UserRoles;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import org.h2.tools.Server;
 
 /**
  * Listener started automatically on CDI application context initialized. Injects proxy to the services and fills
  * database with default content. When using persistence storage application instance should be initialized only during
  * first run in order to init database with starting data. Good place to create first default admin user.
  */
-@ApplicationScoped
+@Singleton
+@Startup
+@NoArgsConstructor(force=true)
+@DeclareRoles({UserRoles.ADMIN, UserRoles.USER})
+@TransactionAttribute(value = TransactionAttributeType.NOT_SUPPORTED)
+@RunAs(UserRoles.ADMIN)
+@Log
 public class InitializedData {
 
     /**
      * User service.
      */
-    private final UserService userService;
-    private final ReviewService reviewService;
-    private final GameService   gameService;
+    private UserService userService;
+    private ReviewService reviewService;
+    private GameService   gameService;
 
-    /**
-     * The CDI container provides a built-in instance of {@link RequestContextController} that is dependent scoped for
-     * the purposes of activating and deactivating.
-     */
-    private final RequestContextController requestContextController;
+    private Pbkdf2PasswordHash passwordHash;
 
-
-    /**
-     * @param userService user service
-     */
     @Inject
-    public InitializedData(UserService userService, ReviewService reviewService, GameService gameService, RequestContextController requestContextController) {
-        this.userService = userService;
+    private SecurityContext securityContext;
+
+    @EJB
+    public void setReviewService(ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    @EJB
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @EJB
+    public void setGameService(GameService gameService) {
         this.gameService = gameService;
-        this.requestContextController = requestContextController;
+    }
+
+    @Inject
+    public InitializedData(@SuppressWarnings("CdiInjectionPointsInspection")
+                           Pbkdf2PasswordHash passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     /**
@@ -65,8 +90,27 @@ public class InitializedData {
      * created only once.
      */
     @SneakyThrows
+    @PostConstruct
     private void init() {
-        if (userService.findAll().size() == 0) {
+
+        if (userService.findAllForInit().isEmpty()) {
+            Server webServer = Server.createWebServer(
+                    "-web",
+                    "-webAllowOthers",
+                    "-webPort", "8082"
+            ).start();
+
+            // Start the TCP server for JDBC connections (port 9092)
+            Server tcpServer = Server.createTcpServer(
+                    "-tcp",
+                    "-tcpAllowOthers",
+                    "-tcpPort", "9092"
+            ).start();
+
+
+            System.out.println("H2 Web Console running at: " + webServer.getURL());
+            System.out.println("Use JDBC URL: jdbc:h2:mem:simple-rpg-games");
+
             User admin = User.builder()
                     .id(UUID.fromString("c4804e0f-769e-4ab9-9ebe-0578fb4f00a6"))
                     .login("admin")
@@ -74,6 +118,7 @@ public class InitializedData {
                     .surname("Admin")
                     .email("admin@simplerpg.example.com")
                     .password("adminadmin")
+                    .roles(List.of(UserRoles.ADMIN, UserRoles.USER))
                     .build();
 
             User kevin = User.builder()
@@ -83,6 +128,7 @@ public class InitializedData {
                     .surname("Pear")
                     .email("kevin@example.com")
                     .password("useruser")
+                    .roles(List.of(UserRoles.USER))
                     .build();
 
             User alice = User.builder()
@@ -92,6 +138,7 @@ public class InitializedData {
                     .surname("Grape")
                     .email("alice@example.com")
                     .password("useruser")
+                    .roles(List.of(UserRoles.USER))
                     .build();
 
             User bob = User.builder()
@@ -101,6 +148,7 @@ public class InitializedData {
                     .surname("Tent")
                     .email("bob@example.com")
                     .password("useruser")
+                    .roles(List.of(UserRoles.USER))
                     .build();
 
             userService.create(admin);
@@ -167,7 +215,7 @@ public class InitializedData {
 
             // Print
             System.out.println("[DEBUG] Initialized database with some example values.");
-            for (User user : userService.findAll()) {
+            for (User user : userService.findAllForInit()) {
                 System.out.println(user);
             }
             for (Review review : reviewService.findAll()) {

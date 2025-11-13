@@ -33,4 +33,6 @@ public class PatchUserRequest {
     private String surname;
 
     private String email;
+
+    private String password;
 }

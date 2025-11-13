@@ -1,11 +1,32 @@
 # Get all users.
 GET http://localhost:9080/simple-rpg/api/users
 
+### Get all users. Admin.
+// @no-cookie-jar
+GET http://localhost:9080/simple-rpg/api/users
+Authorization: Basic YWRtaW46YWRtaW5hZG1pbg==
+
 ### Get one user by its UUID - bad UUID
 GET http://localhost:9080/simple-rpg/api/users/123e4567-e89b-12d3-a456-426614174000
 
 ### Get one user by its UUID - Bob UUID
 GET http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197
+
+## echo -n "admin:admin123" | base64
+## Output: YWRtaW46YWRtaW4xMjM=
+### Create user
+
+PUT http://localhost:9080/simple-rpg/api/users/123e4567-e89b-12d3-a456-426614174123
+Content-Type: application/json
+
+{
+  "login": "test",
+  "name": "John",
+  "surname": "Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "gender": "MALE"
+}
 
 ### Create user (bob) avatar
 

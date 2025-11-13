@@ -1,12 +1,19 @@
 package pl.edu.pg.eti.kask.rpg.user.service;
 
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.EJB;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.security.enterprise.SecurityContext;
 import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
+import pl.edu.pg.eti.kask.rpg.user.entity.UserRoles;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserAvatarRepository;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
@@ -19,7 +26,8 @@ import java.util.UUID;
 /**
  * Service layer for all business actions regarding user entity.
  */
-@ApplicationScoped
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 public class UserService {
 
@@ -34,11 +42,16 @@ public class UserService {
      */
     private final Pbkdf2PasswordHash passwordHash;
 
+
+    private final SecurityContext securityContext;
+
+
     @Inject
-    public UserService(UserRepository userRepository, UserAvatarRepository userAvatarRepository, Pbkdf2PasswordHash passwordHash) {
+    public UserService(UserRepository userRepository, UserAvatarRepository userAvatarRepository, Pbkdf2PasswordHash passwordHash,  SecurityContext securityContext) {
         this.userRepository = userRepository;
         this.userAvatarRepository = userAvatarRepository;
         this.passwordHash = passwordHash;
+        this.securityContext = securityContext;
     }
 
     /**
@@ -59,9 +72,17 @@ public class UserService {
         return userRepository.findByLogin(login);
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public List<User> findAll() {
         return userRepository.findAll();
     }
+
+    @PermitAll
+    public List<User> findAllForInit() {
+        return userRepository.findAll();
+    }
+
+
 
 
     /**
@@ -69,10 +90,17 @@ public class UserService {
      *
      * @param user new user to be saved
      */
-    @Transactional
     public void create(User user) {
         user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         userRepository.create(user);
+    }
+
+    public void update(User user) {
+        userRepository.update(user);
+    }
+
+    public void delete(User user) {
+        userRepository.delete(user);
     }
 
     public void updateAvatar(UUID id, InputStream is) {
@@ -112,6 +140,7 @@ public class UserService {
      * @param password user's password
      * @return true if provided login and password are correct
      */
+    @PermitAll
     public boolean verify(String login, String password) {
         return find(login)
                 .map(user -> passwordHash.verify(password.toCharArray(), user.getPassword()))

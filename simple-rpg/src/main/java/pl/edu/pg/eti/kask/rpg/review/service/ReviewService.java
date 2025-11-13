@@ -1,5 +1,9 @@
 package pl.edu.pg.eti.kask.rpg.review.service;
 
+import jakarta.ejb.EJB;
+import jakarta.ejb.Local;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -13,7 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
@@ -28,13 +33,13 @@ public class ReviewService {
     }
 
     public List<Review> findAllForGame(UUID gameId) {
+
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()
                 .filter(review -> review.getGame().getId().equals(gameId))
                 .toList();
     }
 
-    @Transactional
     public void create(Review review) {
         reviewRepository.create(review);
     }
@@ -48,12 +53,10 @@ public class ReviewService {
                 .filter(review -> review.getGame().getId() != null && gameId.equals(review.getGame().getId()));
     }
 
-    @Transactional
     public void update(Review review) {
         reviewRepository.update(review);
     }
 
-    @Transactional
     public void delete(Review review) {
         reviewRepository.delete(review);
     }

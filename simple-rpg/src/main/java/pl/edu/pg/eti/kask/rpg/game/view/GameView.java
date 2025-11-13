@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.game.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -31,9 +32,10 @@ import java.util.UUID;
 @Named
 public class GameView implements Serializable {
 
-    private final GameService gameService;
-    private final ReviewService reviewService;
-    private final UserService userService;
+    private GameService gameService;
+    private ReviewService reviewService;
+    private UserService userService;
+
 
     private final ModelFunctionFactory factory;
 
@@ -44,12 +46,24 @@ public class GameView implements Serializable {
     @Getter
     private GameModel game;
 
+    @EJB
+    public void setGameService(GameService gameService) {
+        this.gameService = gameService;
+    }
+
+    @EJB
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
+    @EJB
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @Inject
-    public GameView(GameService service, ReviewService reviewService, UserService userService, ModelFunctionFactory factory) {
-        this.gameService = service;
-        this.reviewService = reviewService;
-        this.userService = userService;
+    public GameView(ModelFunctionFactory factory) {
         this.factory = factory;
     }
 
