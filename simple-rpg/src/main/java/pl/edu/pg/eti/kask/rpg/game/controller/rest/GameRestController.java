@@ -17,7 +17,9 @@ import pl.edu.pg.eti.kask.rpg.game.dto.PatchGameRequest;
 import pl.edu.pg.eti.kask.rpg.game.dto.PutGameRequest;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.service.GameService;
+import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 
+import java.util.List;
 import java.util.UUID;
 
 @Path("")
@@ -108,11 +110,21 @@ public class GameRestController implements GameController {
 
     @Override
     public void deleteGame(UUID id) {
-        service.find(id).ifPresentOrElse(
-                entity -> service.delete(entity),
-                () -> {
-                    throw new NotFoundException();
-                }
-        );
+        try {
+            Game existing = service.find(id)
+                    .orElseThrow(() -> new NotFoundException("Game not found: " + id));
+
+            final List<Review> reviews = existing.getReviews();
+
+            service.find(id).ifPresentOrElse(
+                    entity -> service.delete(entity),
+                    () -> {
+                        throw new NotFoundException();
+                    }
+            );
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException(ex);
+        }
+
     }
 }

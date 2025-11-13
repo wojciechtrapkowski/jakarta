@@ -2,6 +2,8 @@ package pl.edu.pg.eti.kask.rpg.game.dto.function;
 
 import pl.edu.pg.eti.kask.rpg.game.dto.GetGameResponse;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
+import pl.edu.pg.eti.kask.rpg.review.entity.Review;
+
 import java.util.function.Function;
 
 public class GameToResponseFunction implements  Function<Game, GetGameResponse> {
@@ -12,7 +14,7 @@ public class GameToResponseFunction implements  Function<Game, GetGameResponse> 
                 .name(game.getName())
                 .dateOfRelease(game.getDateOfRelease())
                 .type(game.getType())
-                .reviews(game.getReviews())
+                .reviews(game.getReviews().stream().map(Review::getId).toList())
                 .build();
     }
 }

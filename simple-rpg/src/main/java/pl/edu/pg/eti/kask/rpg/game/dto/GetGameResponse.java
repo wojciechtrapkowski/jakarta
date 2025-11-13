@@ -20,5 +20,5 @@ public class GetGameResponse {
     String name;
     LocalDate dateOfRelease;
     GameType type;
-    List<Review> reviews;
+    List<UUID> reviews;
 }

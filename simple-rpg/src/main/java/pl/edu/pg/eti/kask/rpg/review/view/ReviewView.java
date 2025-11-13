@@ -63,7 +63,7 @@ public class ReviewView implements Serializable {
                     .orElse("Unknown user");
             this.review.setUserName(username);
         } else {
-            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Game not found");
+            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Review not found");
         }
     }
 }
