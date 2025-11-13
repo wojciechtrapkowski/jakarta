@@ -1,5 +1,8 @@
 package pl.edu.pg.eti.kask.rpg.user.service;
 
+import jakarta.ejb.EJB;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -19,7 +22,8 @@ import java.util.UUID;
 /**
  * Service layer for all business actions regarding user entity.
  */
-@ApplicationScoped
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 public class UserService {
 

@@ -1,6 +1,7 @@
 package pl.edu.pg.eti.kask.rpg.game.repository.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
+@Dependent
 public class GamePersistenceRepository implements GameRepository {
     private EntityManager entityManager;
 

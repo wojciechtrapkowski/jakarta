@@ -1,6 +1,7 @@
 package pl.edu.pg.eti.kask.rpg.user.repository.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -13,11 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Repository for User entity. Repositories should be used in business layer (e.g.: in services).
- */
-// Everything is synchronized in DataStore, so we can use ApplicationScoped here.
-@ApplicationScoped
+@Dependent
 public class UserPersistenceRepository implements UserRepository {
     private EntityManager entityManager;
 

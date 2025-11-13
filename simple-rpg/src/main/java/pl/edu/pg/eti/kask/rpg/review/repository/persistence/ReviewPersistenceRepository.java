@@ -1,6 +1,7 @@
 package pl.edu.pg.eti.kask.rpg.review.repository.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
+@Dependent
 public class ReviewPersistenceRepository implements ReviewRepository {
     private EntityManager entityManager;
 

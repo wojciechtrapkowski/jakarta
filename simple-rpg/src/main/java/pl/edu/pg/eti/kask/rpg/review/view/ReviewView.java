@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.review.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -30,8 +31,18 @@ import java.util.UUID;
 @ViewScoped
 @Named
 public class ReviewView implements Serializable {
-    private final ReviewService reviewService;
-    private final UserService userService;
+    private ReviewService reviewService;
+    private UserService userService;
+
+    @EJB
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
+    @EJB
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     private final ModelFunctionFactory factory;
 
@@ -44,9 +55,7 @@ public class ReviewView implements Serializable {
 
 
     @Inject
-    public ReviewView(ReviewService reviewService, UserService userService, ModelFunctionFactory factory) {
-        this.reviewService = reviewService;
-        this.userService = userService;
+    public ReviewView(ModelFunctionFactory factory) {
         this.factory = factory;
     }
 
