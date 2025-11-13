@@ -10,6 +10,7 @@ import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.dto.*;
 import pl.edu.pg.eti.kask.rpg.user.dto.GetUserResponse;
 import pl.edu.pg.eti.kask.rpg.user.dto.GetUsersResponse;
+import pl.edu.pg.eti.kask.rpg.user.dto.PatchUserRequest;
 import pl.edu.pg.eti.kask.rpg.user.dto.PutUserRequest;
 import pl.edu.pg.eti.kask.rpg.user.dto.function.*;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -84,5 +85,14 @@ public class DtoFunctionFactory {
 
     public ReviewsToResponseFunction reviewsToResponse() {
         return new ReviewsToResponseFunction();
+    }
+
+    // ---------------------- User ----------------------
+     public PutUserRequestFunction putUserRequest() {
+        return new PutUserRequestFunction();
+     }
+
+    public PatchUserRequestFunction patchUserRequest() {
+        return new PatchUserRequestFunction();
     }
 }
