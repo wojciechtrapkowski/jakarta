@@ -54,12 +54,6 @@
             <artifactId>mdb-ui-kit</artifactId>
             <version>6.4.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.3.232</version> <!-- Or latest version -->
-        </dependency>
     </dependencies>
 
     <build>

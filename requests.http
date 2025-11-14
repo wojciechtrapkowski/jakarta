@@ -1,80 +1,41 @@
-# Get all users.
-GET http://localhost:9080/simple-rpg/api/users
+@ADMIN_TOKEN = YWRtaW46YWRtaW5hZG1pbg==
+@KEVIN_TOKEN = a2V2aW46dXNlcnVzZXI=
+@ALICE_TOKEN = YWxpY2U6dXNlcnVzZXI=
 
-### Get all users. Admin.
+# Get all users. Everyone should be able to that.
 // @no-cookie-jar
 GET http://localhost:9080/simple-rpg/api/users
-Authorization: Basic YWRtaW46YWRtaW5hZG1pbg==
 
-### Get one user by its UUID - bad UUID
-GET http://localhost:9080/simple-rpg/api/users/123e4567-e89b-12d3-a456-426614174000
-
-### Get one user by its UUID - Bob UUID
-GET http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197
-
-## echo -n "admin:admin123" | base64
-## Output: YWRtaW46YWRtaW4xMjM=
-### Create user
-
-PUT http://localhost:9080/simple-rpg/api/users/123e4567-e89b-12d3-a456-426614174123
+### Create user - anyone
+// @no-cookie-jar
+PUT http://localhost:9080/simple-rpg/api/users/123e4567-e89b-12d3-bc56-426614174123
 Content-Type: application/json
 
 {
-  "login": "test",
-  "name": "John",
+  "login": "test2",
+  "name": "John22",
   "surname": "Doe",
-  "email": "john@example.com",
+  "email": "john@exampl2e.com",
   "password": "password123",
   "gender": "MALE"
 }
 
-### Create user (bob) avatar
-
-PUT http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar
-Content-Type: multipart/form-data; boundary=boundary
-
---boundary
-Content-Disposition: form-data; name="avatar"; filename="sigrid.png'
-
-< simple-rpg/src/main/resources/pl/edu/pg/eti/kask/rpg/configuration/avatar/zereni.png
---boundary--
-
-### Get user (bob) avatar
-
-GET http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar
-
-###  Remove user (bob) avatar
-
-DELETE http://localhost:9080/simple-rpg/api/users/ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197/avatar
-
-### Get all games
-
+### Get all games - everyone should be able to that.
+// @no-cookie-jar
 GET http://localhost:9080/simple-rpg/api/games
+Authorization: Basic {{KEVIN_TOKEN}}
 
-### Get specific game
-
+### Get specific game - everyone should be able to that.
+// @no-cookie-jar
 GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197
-
-### Update game!
-
-PATCH http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197
-Content-Type: application/json
-
-{
-    "name": "Dragon Questt!"
-}
-
-### Delete game!
-
-DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4197
+Authorization: Basic {{KEVIN_TOKEN}}
 
 
-### DELETE NEW GAME
-DELETE  http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
-
-### Create a new game
+### Create a new game - only admin should do that.
+// @no-cookie-jar
 PUT http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
 Content-Type: application/json
+Authorization: Basic {{ADMIN_TOKEN}}
 
 {
   "name": "My New RPG",
@@ -82,15 +43,49 @@ Content-Type: application/json
   "type": "RPG"
 }
 
-### Get all reviews for a game
+
+### Delete new game - only admin should do that.
+// @no-cookie-jar
+DELETE  http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
+Authorization: Basic {{ADMIN_TOKEN}}
+
+### Create a new game - should fail.
+// @no-cookie-jar
+PUT http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
+Content-Type: application/json
+Authorization: Basic {{KEVIN_TOKEN}}
+
+{
+  "name": "My New RPG",
+  "dateOfRelease": "2025-10-29",
+  "type": "RPG"
+}
+
+### Delete new game - should fail.
+// @no-cookie-jar
+DELETE  http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196
+Authorization: Basic {{KEVIN_TOKEN}}
+
+### Get all reviews for a game - admin should be able to do that.
+// @no-cookie-jar
 GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews
+Authorization: Basic {{ADMIN_TOKEN}}
 
-### Get specific review
-GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+### Get all reviews for a game - user should see just his
+// @no-cookie-jar
+GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews
+Authorization: Basic {{KEVIN_TOKEN}}
 
-### Create a new review
+### Get all reviews for a game - user should see just his
+// @no-cookie-jar
+GET http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews
+Authorization: Basic {{ALICE_TOKEN}}
+
+### Create a new review - should be assigned to Kevin
+// @no-cookie-jar
 PUT http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
 Content-Type: application/json
+Authorization: Basic {{KEVIN_TOKEN}}
 
 {
   "description": "Awesome game, loved it!",
@@ -98,14 +93,48 @@ Content-Type: application/json
   "userId": "ed6cfb2a-cad7-47dd-9b56-9d1e3c7a4197"
 }
 
-### Update review
+### Delete review - admin can do it all.
+// @no-cookie-jar
+DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Authorization:  Basic {{ADMIN_TOKEN}}
+
+### Update review - admin can do it all
+// @no-cookie-jar
 PATCH http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
 Content-Type: application/json
+Authorization:  Basic {{ADMIN_TOKEN}}
+
+{
+  "description": "Actually, I chawwnged my mind, it's amazing!"
+}
+
+### Delete review - user should be able to change his. Should fail.
+// @no-cookie-jar
+DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Authorization:  Basic {{ALICE_TOKEN}}
+
+
+### Delete review - user should be able to change his.
+// @no-cookie-jar
+DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Authorization:  Basic {{KEVIN_TOKEN}}
+
+### Update review - user should be able to change his.
+// @no-cookie-jar
+PATCH http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Content-Type: application/json
+Authorization:  Basic {{ADMIN_TOKEN}}
 
 {
   "description": "Actually, I changed my mind, it's amazing!"
 }
 
-### Delete review
+### Update review - user should be able to change his. Should fail.
+// @no-cookie-jar
+PATCH http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+Content-Type: application/json
+Authorization:  Basic {{ALICE_TOKEN}}
 
-DELETE http://localhost:9080/simple-rpg/api/games/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4196/reviews/ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4111
+{
+  "description": "Actually, I changed my mind, it's amazing!"
+}

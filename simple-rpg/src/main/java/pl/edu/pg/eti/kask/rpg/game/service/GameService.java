@@ -1,5 +1,6 @@
 package pl.edu.pg.eti.kask.rpg.game.service;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,6 +11,7 @@ import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.repository.api.GameRepository;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
+import pl.edu.pg.eti.kask.rpg.user.entity.UserRoles;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +29,17 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
+    @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
     public List<Game> findAll() {
         return gameRepository.findAll();
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public void create(Game game) {
         gameRepository.create(game);
     }
 
+    @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
     public Optional<Game> find(UUID id) {
         return gameRepository.find(id);
     }
@@ -43,6 +48,7 @@ public class GameService {
         gameRepository.update(game);
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public void delete(Game game) {
         gameRepository.delete(game);
     }

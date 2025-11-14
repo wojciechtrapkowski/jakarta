@@ -15,15 +15,20 @@
     <application type="war" location="simple-rpg-1.0-SNAPSHOT.war">
         <application-bnd>
             <security-role name="admin">
-                <group name="admin" access-id="group:jdbc/SimpleRpgCharacters/admin"/>
+                <group name="admin" access-id="group:jdbc/SimpleRpgGames/admin"/>
                 <run-as userid="admin-service"/>
             </security-role>
             <security-role name="user">
-                <group name="user" access-id="group:jdbc/SimpleRpgCharacters/user"/>
+                <group name="user" access-id="group:jdbc/SimpleRpgGames/user"/>
             </security-role>
         </application-bnd>
     </application>
 
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="admin-service" password="adminpass"/>
+        <user name="admin" password="adminpass"/>
+        <user name="user" password="userpass"/>
+    </basicRegistry>
 
     <dataSource id="SimpleRpgGamesDataSource" jndiName="jdbc/SimpleRpgGames">
         <jdbcDriver

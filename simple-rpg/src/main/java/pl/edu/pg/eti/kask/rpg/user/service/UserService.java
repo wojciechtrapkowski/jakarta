@@ -72,15 +72,10 @@ public class UserService {
         return userRepository.findByLogin(login);
     }
 
-    @RolesAllowed(UserRoles.ADMIN)
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    @PermitAll
-    public List<User> findAllForInit() {
-        return userRepository.findAll();
-    }
 
 
 
@@ -91,7 +86,7 @@ public class UserService {
      * @param user new user to be saved
      */
     public void create(User user) {
-        user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
+//        user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         userRepository.create(user);
     }
 

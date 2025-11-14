@@ -1,14 +1,13 @@
 package pl.edu.pg.eti.kask.rpg.review.controllers.rest;
 
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
 import pl.edu.pg.eti.kask.rpg.game.service.GameService;
 import pl.edu.pg.eti.kask.rpg.review.controllers.api.ReviewController;
@@ -21,8 +20,10 @@ import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Path("")
+@Log
 public class ReviewRestController implements ReviewController {
 
     private final GameService gameService;
@@ -52,18 +53,27 @@ public class ReviewRestController implements ReviewController {
 
     @Override
     public GetReviewsResponse getReviews(UUID gameId) {
-        return gameService.find(gameId)
-                .map(game -> factory.reviewsToResponse()
-                        .apply(reviewService.findAllForGame(gameId)))
-                .orElseThrow(NotFoundException::new);
-
+        try {
+            return gameService.find(gameId)
+                    .map(game -> factory.reviewsToResponse()
+                            .apply(reviewService.findAllForGame(gameId)))
+                    .orElseThrow(NotFoundException::new);
+        }  catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
+        }
     }
 
     @Override
     public GetReviewResponse getReview(UUID gameId, UUID reviewId) {
-        return reviewService.findForGame(gameId, reviewId)
-                .map(factory.reviewToResponse())
-                .orElseThrow(NotFoundException::new);
+        try {
+            return reviewService.findForGame(gameId, reviewId)
+                    .map(factory.reviewToResponse())
+                    .orElseThrow(NotFoundException::new);
+        }  catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
+        }
     }
 
     @Override
@@ -88,6 +98,9 @@ public class ReviewRestController implements ReviewController {
             throw new WebApplicationException(Response.Status.CREATED);
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException(ex);
+        }  catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
         }
     }
 
@@ -105,16 +118,24 @@ public class ReviewRestController implements ReviewController {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException(ex);
+        } catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
         }
     }
 
     @Override
     public void deleteReview(UUID gameId, UUID reviewId) {
-
-        reviewService.findForGame(gameId, reviewId).ifPresentOrElse(
-                reviewService::delete,
-                () -> {
-                    throw new NotFoundException();
-                });
+        try {
+            reviewService.findForGame(gameId, reviewId).ifPresentOrElse(
+                    reviewService::delete,
+                    () -> {
+                        throw new NotFoundException();
+                    });
+        }
+         catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
+        }
     }
 }

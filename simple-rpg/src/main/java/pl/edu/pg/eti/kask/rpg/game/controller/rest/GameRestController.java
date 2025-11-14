@@ -1,14 +1,13 @@
 package pl.edu.pg.eti.kask.rpg.game.controller.rest;
 
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
 import pl.edu.pg.eti.kask.rpg.game.controller.api.GameController;
 import pl.edu.pg.eti.kask.rpg.game.dto.GetGameResponse;
@@ -21,8 +20,10 @@ import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Path("")
+@Log
 public class GameRestController implements GameController {
 
     GameService service;
@@ -76,19 +77,34 @@ public class GameRestController implements GameController {
             throw new WebApplicationException(Response.Status.CREATED);
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException(ex);
+        } catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
         }
     }
 
 
     @Override
     public GetGameResponse getGame(UUID id) {
-        return service.find(id).map(factory.gameToResponse()).orElseThrow(NotFoundException::new);
+        try {
+            return service.find(id).map(factory.gameToResponse()).orElseThrow(NotFoundException::new);
+        }
+        catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
+        }
     }
 
 
     @Override
     public GetGamesResponse getGames() {
-        return factory.gamesToResponse().apply(service.findAll());
+        try {
+            return factory.gamesToResponse().apply(service.findAll());
+        }
+        catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
+        }
     }
 
     @Override
@@ -105,6 +121,9 @@ public class GameRestController implements GameController {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException(ex);
+        } catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
         }
     }
 
@@ -124,6 +143,9 @@ public class GameRestController implements GameController {
             );
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException(ex);
+         }catch (EJBException ex) {
+            log.log(Level.WARNING, ex.getMessage(), ex);
+            throw new ForbiddenException(ex.getMessage());
         }
 
     }
