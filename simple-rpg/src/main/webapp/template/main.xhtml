@@ -5,7 +5,7 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core">
-<f:view>
+<f:view locale="#{view.locale}">
     <h:head>
         <meta charset="UTF-8"/>
         <meta name="description" content="Simple Web Application"/>
@@ -22,8 +22,8 @@
     <h:body>
         <div class="container">
             <header class="mb-4 mt-4 text-center">
-                <h1>Game Reviews Service</h1>
-                <h:graphicImage library="images" name="banner.jpeg" alt="Game Reviews Banner"
+                <h1>#{msg['app.title']}</h1>
+                <h:graphicImage library="images" name="#{view.locale.language eq 'pl' ? 'banner_pl.jpeg' : 'banner_en.jpeg'}" alt="Game Reviews Banner"
                                 style="max-width: 100%; height: auto; margin-top: 10px; border-radius: 8px;"/>
             </header>
 
@@ -31,19 +31,21 @@
                 <div class="container-fluid">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <h:link styleClass="nav-link" outcome="/index.xhtml">Home</h:link>
-                            <h:link styleClass="nav-link" outcome="/game/games_list.xhtml">Games</h:link>
+                            <h:link styleClass="nav-link" outcome="/index.xhtml">#{msg['app.home']}</h:link>
+                            <h:link styleClass="nav-link" outcome="/game/games_list.xhtml">#{msg['app.games']}</h:link>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item" rendered="#{request.userPrincipal != null}">
-                            <span class="navbar-text me-3">
-                                Logged in as: <strong>#{request.userPrincipal.name}</strong>
-                            </span>
+                        <li class="nav-item">
+                            <h:form rendered="#{request.userPrincipal != null}">
+                                <span class="navbar-text me-3">
+                                    #{msg['app.loggedInAs']} <strong>#{request.userPrincipal.name}</strong>
+                                </span>
+                            </h:form>
                         </li>
-                        <li class="nav-item" rendered="#{request.userPrincipal != null}">
-                            <h:form styleClass="d-inline">
-                                <h:commandButton value="Logout" styleClass="btn btn-sm btn-outline-secondary" 
+                        <li class="nav-item">
+                            <h:form styleClass="d-inline" rendered="#{request.userPrincipal != null}">
+                                <h:commandButton value="#{msg['app.logout']}" styleClass="btn btn-sm btn-outline-secondary" 
                                                  action="#{logoutView.logout()}"/>
                             </h:form>
                         </li>
@@ -57,7 +59,7 @@
 
             <footer class="text-center text-lg-start bg-light text-muted p-2">
                 <div class="text-center">
-                    Copyright &#169; 2020-2023, Wojciech Trapkowski
+                    #{msg['footer.copyright']} &#169; 2020-2023, Wojciech Trapkowski
                 </div>
             </footer>
         </div>

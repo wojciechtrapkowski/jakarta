@@ -15,33 +15,33 @@
     <ui:define name="content">
         <article>
             <header>
-                <h2>Review Details</h2>
+                <h2>#{msg['review.title']}</h2>
             </header>
 
             <div class="container">
                 <div class="row mb-2">
-                    <div class="col-4">User:</div>
+                    <div class="col-4">#{msg['review.user']}</div>
                     <div class="col-8">
                         <h:outputText value="#{reviewView.review.userName}"/>
                     </div>
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-4">Description:</div>
+                    <div class="col-4">#{msg['review.description']}</div>
                     <div class="col-8">
                         <h:outputText value="#{reviewView.review.description}"/>
                     </div>
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-4">Mark:</div>
+                    <div class="col-4">#{msg['review.mark']}</div>
                     <div class="col-8">
                         <h:outputText value="#{reviewView.review.mark}"/>
                     </div>
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-4">Date:</div>
+                    <div class="col-4">#{msg['review.date']}</div>
                     <div class="col-8">
                         <h:outputText value="#{reviewView.review.dateOfCreation}"/>
                     </div>
@@ -49,7 +49,7 @@
 
                 <div class="row mt-4">
                     <div class="col">
-                        <h:link outcome="/game/game_view.xhtml" value="Back to Game">
+                        <h:link outcome="/game/game_view.xhtml" value="#{msg['review.backToGame']}">
                             <f:param name="id" value="#{reviewView.review.game.id}"/>
                         </h:link>
                     </div>

@@ -12,7 +12,7 @@
 
     <ui:define name="content">
         <article>
-            <header><h2>Edit Review</h2></header>
+            <header><h2>#{msg['review.edit.title']}</h2></header>
             <h:form styleClass="container">
 
                 <!-- Game selection dropdown -->
@@ -23,7 +23,7 @@
                             <f:selectItems value="#{reviewEditView.games}" var="game"
                                            itemValue="#{game.id}" itemLabel="#{game.name}"/>
                         </h:selectOneMenu>
-                        <h:outputLabel for="game" value="Game:" styleClass="form-label"/>
+                        <h:outputLabel for="game" value="#{msg['review.edit.game']}" styleClass="form-label"/>
                     </div>
                 </div>
 
@@ -31,7 +31,7 @@
                 <div class="row mb-2">
                     <div class="col-6 p-2">
                         <h:inputTextarea id="description" value="#{reviewEditView.review.description}" styleClass="form-control" rows="4"/>
-                        <h:outputLabel for="description" value="Description:" styleClass="form-label"/>
+                        <h:outputLabel for="description" value="#{msg['review.edit.description']}" styleClass="form-label"/>
                     </div>
                 </div>
 
@@ -39,17 +39,17 @@
                 <div class="row mb-2">
                     <div class="col-2 p-2">
                         <h:inputText id="mark" value="#{reviewEditView.review.mark}" styleClass="form-control"/>
-                        <h:outputLabel for="mark" value="Mark:" styleClass="form-label"/>
+                        <h:outputLabel for="mark" value="#{msg['review.edit.mark']}" styleClass="form-label"/>
                     </div>
                 </div>
 
                 <!-- Buttons -->
                 <div class="row mt-3">
                     <div class="col-2 p-2 text-center">
-                        <h:commandButton styleClass="btn btn-primary" value="Save" action="#{reviewEditView.saveAction()}"/>
+                        <h:commandButton styleClass="btn btn-primary" value="#{msg['review.edit.save']}" action="#{reviewEditView.saveAction()}"/>
                     </div>
                     <div class="col-2 p-2 text-center">
-                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="Reset"/>
+                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="#{msg['review.edit.reset']}"/>
                     </div>
                 </div>
 
