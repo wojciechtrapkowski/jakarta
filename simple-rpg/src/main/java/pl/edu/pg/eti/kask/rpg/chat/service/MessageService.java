@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.chat.entity.Message;
 import pl.edu.pg.eti.kask.rpg.chat.event.MessageEvent;
-import pl.edu.pg.eti.kask.rpg.chat.repository.api.MessageRepository;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -26,19 +25,15 @@ import java.util.UUID;
  * Service for chat messages.
  */
 @ApplicationScoped
-@Interceptors(OperationLoggingInterceptor.class)
 @NoArgsConstructor(force = true)
 public class MessageService {
 
-    private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final Event<MessageEvent> messageEvent;
 
     @Inject
-    public MessageService(MessageRepository messageRepository, 
-                         UserRepository userRepository,
+    public MessageService(UserRepository userRepository,
                          Event<MessageEvent> messageEvent) {
-        this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.messageEvent = messageEvent;
     }
@@ -47,19 +42,17 @@ public class MessageService {
      * Send a message to all users.
      */
     @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
-    @LogOperation("CREATE")
     @Transactional
     public void sendBroadcastMessage(UUID senderId, String content) {
         User sender = userRepository.find(senderId).orElseThrow();
         
         Message message = Message.builder()
+                .id(UUID.randomUUID())
                 .sender(sender)
                 .content(content)
                 .timestamp(LocalDateTime.now())
                 .broadcast(true)
                 .build();
-        
-        messageRepository.create(message);
         
         // Fire CDI event
         fireMessageEvent(message);
@@ -69,21 +62,19 @@ public class MessageService {
      * Send a message to a specific user.
      */
     @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
-    @LogOperation("CREATE")
     @Transactional
     public void sendPrivateMessage(UUID senderId, UUID recipientId, String content) {
         User sender = userRepository.find(senderId).orElseThrow();
         User recipient = userRepository.find(recipientId).orElseThrow();
         
         Message message = Message.builder()
+                .id(UUID.randomUUID())
                 .sender(sender)
                 .recipient(recipient)
                 .content(content)
                 .timestamp(LocalDateTime.now())
                 .broadcast(false)
                 .build();
-        
-        messageRepository.create(message);
         
         // Fire CDI event
         fireMessageEvent(message);
@@ -101,20 +92,5 @@ public class MessageService {
         );
         
         messageEvent.fire(event);
-    }
-
-    @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
-    public List<Message> getRecentMessages(int limit) {
-        return messageRepository.findRecent(limit);
-    }
-
-    @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
-    public Optional<Message> find(UUID id) {
-        return messageRepository.find(id);
-    }
-
-    @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
-    public List<Message> findAll() {
-        return messageRepository.findAll();
     }
 }
