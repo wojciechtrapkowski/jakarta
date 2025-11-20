@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * REST controller for chat messages.
  */
-@Path("/api/chat")
+@Path("")
 @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
 @Log
 public class ChatRestController {
@@ -37,7 +37,7 @@ public class ChatRestController {
     }
 
     @POST
-    @Path("/send")
+    @Path("/chat/send")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendMessage(SendMessageRequest request) {
