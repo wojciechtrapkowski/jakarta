@@ -9,11 +9,11 @@
         <h:outputStylesheet library="game" name="css/games_list.css"/><!-- Automatically relocated to head. -->
 
         <article class="text--justified">
-            <header><h2>Games</h2></header>
+            <header><h2>#{msg['games.title']}</h2></header>
 
 
             <div class="mb-3">
-                <h:link outcome="/review/review_create.xhtml" styleClass="btn btn-success" value="Create Review">
+                <h:link outcome="/review/review_create.xhtml" styleClass="btn btn-success" value="#{msg['games.createReview']}">
 
                 </h:link>
             </div>
@@ -21,21 +21,21 @@
             <h:dataTable value="#{gamesList.games.games}" var="game"
                          styleClass="table align-middle mb-0 bg-white" headerClass="bg-light">
                 <h:column>
-                    <f:facet name="header">Name</f:facet>
+                    <f:facet name="header">#{msg['games.name']}</f:facet>
                     <h:outputText value="#{game.name}"/>
                 </h:column>
 
                 <h:column>
-                    <f:facet name="header">View</f:facet>
-                    <h:link outcome="/game/game_view.xhtml" value="View">
+                    <f:facet name="header">#{msg['games.view']}</f:facet>
+                    <h:link outcome="/game/game_view.xhtml" value="#{msg['games.view']}">
                         <f:param name="id" value="#{game.id}"/>
                     </h:link>
                 </h:column>
 
                 <h:column rendered="#{request.isUserInRole('admin')}">
-                    <f:facet name="header">Delete</f:facet>
+                    <f:facet name="header">#{msg['games.delete']}</f:facet>
                     <h:form>
-                        <h:commandButton styleClass="btn" value="Delete"
+                        <h:commandButton styleClass="btn" value="#{msg['games.delete']}"
                                          action="#{gamesList.deleteAction(game)}"/>
                     </h:form>
                 </h:column>
