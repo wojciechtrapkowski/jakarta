@@ -32,9 +32,9 @@
                     </h:link>
                 </h:column>
 
-                <h:column>
+                <h:column rendered="#{request.isUserInRole('admin')}">
                     <f:facet name="header">Delete</f:facet>
-                    <h:form rendered="#{request.isUserInRole('admin')}">
+                    <h:form>
                         <h:commandButton styleClass="btn" value="Delete"
                                          action="#{gamesList.deleteAction(game)}"/>
                     </h:form>
