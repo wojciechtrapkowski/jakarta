@@ -59,7 +59,7 @@ public class OperationLoggingInterceptor {
 
     /**
      * Extracts the resource ID from the method parameters.
-     * Looks for the first UUID parameter which is typically the resource ID.
+     * Looks for the first UUID parameter or extracts ID from entity objects.
      */
     private UUID extractResourceId(InvocationContext context) {
         Object[] parameters = context.getParameters();
@@ -67,6 +67,18 @@ public class OperationLoggingInterceptor {
             for (Object param : parameters) {
                 if (param instanceof UUID) {
                     return (UUID) param;
+                }
+                // Try to extract ID from entity objects using reflection
+                if (param != null) {
+                    try {
+                        java.lang.reflect.Method getIdMethod = param.getClass().getMethod("getId");
+                        Object id = getIdMethod.invoke(param);
+                        if (id instanceof UUID) {
+                            return (UUID) id;
+                        }
+                    } catch (Exception e) {
+                        // Continue to next parameter
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.repository.api.GameRepository;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
@@ -35,6 +36,7 @@ public class GameService {
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @LogOperation("CREATE")
     public void create(Game game) {
         gameRepository.create(game);
     }
@@ -44,11 +46,13 @@ public class GameService {
         return gameRepository.find(id);
     }
 
+    @LogOperation("UPDATE")
     public void update(Game game) {
         gameRepository.update(game);
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @LogOperation("DELETE")
     public void delete(Game game) {
         gameRepository.delete(game);
     }

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.ForbiddenException;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.NoArgsConstructor;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
@@ -61,6 +62,7 @@ public class ReviewService {
 
 
     @RolesAllowed({UserRoles.USER})
+    @LogOperation("CREATE")
     public void create(Review review) {
         User user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName())
                 .orElseThrow(IllegalStateException::new);
@@ -91,11 +93,13 @@ public class ReviewService {
 
     }
 
+    @LogOperation("UPDATE")
     public void update(Review review) {
         checkAdminRoleOrOwner(reviewRepository.find(review.getId()));
         reviewRepository.update(review);
     }
 
+    @LogOperation("DELETE")
     public void delete(Review review) {
         checkAdminRoleOrOwner(reviewRepository.find(review.getId()));
         reviewRepository.delete(review);
