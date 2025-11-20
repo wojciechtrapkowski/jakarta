@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ForbiddenException;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
@@ -18,6 +19,7 @@ import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @LocalBean
 @Stateless
@@ -69,7 +71,7 @@ public class ReviewService {
 
     @RolesAllowed(UserRoles.USER)
     public Optional<Review> find(UUID id) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return reviewRepository.find(id);
     }
 
     public Optional<Review> findForGame(UUID gameId, UUID reviewId) {
@@ -80,7 +82,10 @@ public class ReviewService {
 
             User user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName()).orElseThrow();
             return reviewRepository.findForUserAndGame(reviewId, user.getId(), gameId);
-        } catch (Exception e) {
+        } catch (EJBException ex) {
+            throw new ForbiddenException(ex.getMessage());
+        }
+        catch (Exception e) {
             throw new NotFoundException(e.getMessage());
         }
 

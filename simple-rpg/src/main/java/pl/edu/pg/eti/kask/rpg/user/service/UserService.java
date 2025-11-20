@@ -76,10 +76,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-
-
-
-
     /**
      * Saves new user. Password is hashed using configured hash algorithm.
      *
