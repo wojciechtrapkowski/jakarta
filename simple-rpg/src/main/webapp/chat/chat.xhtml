@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/template/main.xhtml">
+
+    <ui:define name="title">Chat</ui:define>
+
+    <ui:define name="content">
+        <h:outputScript>
+            var ws;
+            var currentUserId = '#{chatView.currentUserId}';
+            
+            function connectWebSocket() {
+                var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                var wsUrl = protocol + '//' + window.location.host + '#{request.contextPath}/chat';
+                
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = function() {
+                    console.log('WebSocket connected');
+                    // Register user
+                    ws.send(JSON.stringify({
+                        type: 'register',
+                        userId: currentUserId
+                    }));
+                };
+                
+                ws.onmessage = function(event) {
+                    console.log('Message received:', event.data);
+                    var message = JSON.parse(event.data);
+                    displayMessage(message);
+                };
+                
+                ws.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                };
+                
+                ws.onclose = function() {
+                    console.log('WebSocket disconnected');
+                    // Attempt to reconnect after 3 seconds
+                    setTimeout(connectWebSocket, 3000);
+                };
+            }
+            
+            function displayMessage(message) {
+                var messagesDiv = document.getElementById('messages');
+                var messageElement = document.createElement('div');
+                messageElement.className = 'card mb-2';
+                
+                var isCurrentUser = message.senderId === currentUserId;
+                var cardClass = isCurrentUser ? 'bg-light' : 'bg-white';
+                messageElement.className += ' ' + cardClass;
+                
+                var timestamp = new Date(message.timestamp).toLocaleTimeString();
+                var recipientInfo = '';
+                if (!message.broadcast) {
+                    recipientInfo = ' <span class="text-muted">(private)</span>';
+                }
+                
+                messageElement.innerHTML = 
+                    '<div class="card-body p-2">' +
+                    '<strong>' + escapeHtml(message.senderLogin) + '</strong>' + recipientInfo +
+                    ' <span class="text-muted small">' + timestamp + '</span>' +
+                    '<div>' + escapeHtml(message.content) + '</div>' +
+                    '</div>';
+                
+                messagesDiv.appendChild(messageElement);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+            
+            function escapeHtml(text) {
+                var div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            function sendMessage() {
+                var content = document.getElementById('messageContent').value;
+                var recipientSelect = document.getElementById('recipientSelect');
+                var recipientId = recipientSelect.value;
+                
+                if (!content.trim()) {
+                    return;
+                }
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '#{request.contextPath}/api/chat/send', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        document.getElementById('messageContent').value = '';
+                    } else {
+                        console.error('Error sending message. Status:', xhr.status, 'Response:', xhr.responseText);
+                        alert('Error sending message: ' + xhr.status);
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    console.error('Network error sending message');
+                    alert('Network error sending message');
+                };
+                
+                xhr.send(JSON.stringify({
+                    content: content,
+                    recipientId: recipientId
+                }));
+                
+                return false;
+            }
+            
+            window.onload = function() {
+                connectWebSocket();
+                
+                // Handle Enter key
+                document.getElementById('messageContent').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' &amp;&amp; !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            };
+        </h:outputScript>
+
+        <article>
+            <header>
+                <h2>#{msg['chat.title']}</h2>
+            </header>
+            
+            <section>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>#{msg['chat.messages']}</h5>
+                            </div>
+                            <div class="card-body" style="height: 400px; overflow-y: auto;" id="messages">
+                                <!-- Messages will be added here via JavaScript -->
+                            </div>
+                            <div class="card-footer">
+                                <div class="row g-2">
+                                    <div class="col-md-3">
+                                        <label for="recipientSelect" class="form-label">#{msg['chat.sendTo']}</label>
+                                        <select class="form-select" id="recipientSelect">
+                                            <option value="">#{msg['chat.everyone']}</option>
+                                            <ui:repeat value="#{chatView.allUsers}" var="user">
+                                                <option value="#{user.id}">#{user.login}</option>
+                                            </ui:repeat>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label for="messageContent" class="form-label">#{msg['chat.message']}</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="messageContent" 
+                                                   placeholder="#{msg['chat.typeMessage']}" />
+                                            <button class="btn btn-primary" type="button" onclick="sendMessage()">
+                                                #{msg['chat.send']}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>#{msg['chat.onlineUsers']}</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <ui:repeat value="#{chatView.allUsers}" var="user">
+                                        <li class="list-group-item">
+                                            #{user.login}
+                                        </li>
+                                    </ui:repeat>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </ui:define>
+</ui:composition>

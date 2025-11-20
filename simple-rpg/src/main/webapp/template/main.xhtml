@@ -33,6 +33,7 @@
                         <li class="nav-item">
                             <h:link styleClass="nav-link" outcome="/index.xhtml">#{msg['app.home']}</h:link>
                             <h:link styleClass="nav-link" outcome="/game/games_list.xhtml">#{msg['app.games']}</h:link>
+                            <h:link styleClass="nav-link" outcome="/chat/chat.xhtml" rendered="#{request.userPrincipal != null}">#{msg['app.chat']}</h:link>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
