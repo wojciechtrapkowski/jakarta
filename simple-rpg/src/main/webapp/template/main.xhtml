@@ -36,13 +36,15 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item" rendered="#{request.userPrincipal != null}">
-                            <span class="navbar-text me-3">
-                                #{msg['app.loggedInAs']} <strong>#{request.userPrincipal.name}</strong>
-                            </span>
+                        <li class="nav-item">
+                            <h:form rendered="#{request.userPrincipal != null}">
+                                <span class="navbar-text me-3">
+                                    #{msg['app.loggedInAs']} <strong>#{request.userPrincipal.name}</strong>
+                                </span>
+                            </h:form>
                         </li>
-                        <li class="nav-item" rendered="#{request.userPrincipal != null}">
-                            <h:form styleClass="d-inline">
+                        <li class="nav-item">
+                            <h:form styleClass="d-inline" rendered="#{request.userPrincipal != null}">
                                 <h:commandButton value="#{msg['app.logout']}" styleClass="btn btn-sm btn-outline-secondary" 
                                                  action="#{logoutView.logout()}"/>
                             </h:form>
