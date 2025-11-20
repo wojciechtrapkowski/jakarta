@@ -41,6 +41,12 @@
                                 Logged in as: <strong>#{request.userPrincipal.name}</strong>
                             </span>
                         </li>
+                        <li class="nav-item" rendered="#{request.userPrincipal != null}">
+                            <h:form styleClass="d-inline">
+                                <h:commandButton value="Logout" styleClass="btn btn-sm btn-outline-secondary" 
+                                                 action="#{logoutView.logout()}"/>
+                            </h:form>
+                        </li>
                     </ul>
                 </div>
             </nav>
