@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
 import pl.edu.pg.eti.kask.rpg.game.controller.api.GameController;
 import pl.edu.pg.eti.kask.rpg.game.dto.GetGameResponse;
 import pl.edu.pg.eti.kask.rpg.game.dto.GetGamesResponse;
@@ -58,6 +59,7 @@ public class GameRestController implements GameController {
     }
 
     @Override
+    @LogOperation("CREATE")
     public void createGame(UUID id, PutGameRequest request) {
         try {
             if (service.find(id).isPresent()) {
@@ -108,6 +110,7 @@ public class GameRestController implements GameController {
     }
 
     @Override
+    @LogOperation("UPDATE")
     public void updateGame(UUID id, PatchGameRequest request) {
         try {
             Game existing = service.find(id)
@@ -128,6 +131,7 @@ public class GameRestController implements GameController {
     }
 
     @Override
+    @LogOperation("DELETE")
     public void deleteGame(UUID id) {
         try {
             Game existing = service.find(id)
