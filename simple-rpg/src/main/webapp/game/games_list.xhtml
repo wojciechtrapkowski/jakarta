@@ -18,33 +18,35 @@
                 </h:link>
             </div>
 
-            <h:dataTable value="#{gamesList.games.games}" var="game"
-                         styleClass="table align-middle mb-0 bg-white" headerClass="bg-light">
-                <h:column>
-                    <f:facet name="header">#{msg['games.name']}</f:facet>
-                    <h:outputText value="#{game.name}"/>
-                </h:column>
+            <h:form id="gamesForm">
+                <h:dataTable id="gamesTable" value="#{gamesList.games.games}" var="game"
+                             styleClass="table align-middle mb-0 bg-white" headerClass="bg-light">
+                    <h:column>
+                        <f:facet name="header">#{msg['games.name']}</f:facet>
+                        <h:outputText value="#{game.name}"/>
+                    </h:column>
 
-                <h:column>
-                    <f:facet name="header">#{msg['games.view']}</f:facet>
-                    <h:link outcome="/game/game_view.xhtml" value="#{msg['games.view']}">
-                        <f:param name="id" value="#{game.id}"/>
-                    </h:link>
-                </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['games.view']}</f:facet>
+                        <h:link outcome="/game/game_view.xhtml" value="#{msg['games.view']}">
+                            <f:param name="id" value="#{game.id}"/>
+                        </h:link>
+                    </h:column>
 
-                <h:column rendered="#{request.isUserInRole('admin')}">
-                    <f:facet name="header">#{msg['games.delete']}</f:facet>
-                    <h:form>
+                    <h:column rendered="#{request.isUserInRole('admin')}">
+                        <f:facet name="header">#{msg['games.delete']}</f:facet>
                         <h:commandButton styleClass="btn" value="#{msg['games.delete']}"
-                                         action="#{gamesList.deleteAction(game)}"/>
-                    </h:form>
-                </h:column>
+                                         action="#{gamesList.deleteAction(game)}">
+                            <f:ajax execute="@this" render="gamesTable"/>
+                        </h:commandButton>
+                    </h:column>
 
 <!--                <f:facet name="footer">-->
 <!--                    <h:button styleClass="btn" outcome="/character/character_create__basic.xhtml"-->
 <!--                              value="Create new character"/>-->
 <!--                </f:facet>-->
-            </h:dataTable>
+                </h:dataTable>
+            </h:form>
         </article>
     </ui:define>
 

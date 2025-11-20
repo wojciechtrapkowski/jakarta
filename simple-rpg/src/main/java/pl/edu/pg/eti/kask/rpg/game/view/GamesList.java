@@ -39,8 +39,9 @@ public class GamesList {
         return games;
     }
 
-    public String deleteAction(GamesModel.Game game) {
+    public void deleteAction(GamesModel.Game game) {
         service.delete(service.find(game.getId()).orElseThrow());
-        return "games_list?faces-redirect=true";
+        // Reset cached games list to force refresh
+        games = null;
     }
 }

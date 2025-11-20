@@ -104,7 +104,7 @@ public class GameView implements Serializable {
         }
     }
 
-    public String deleteReview(UUID reviewId) {
+    public void deleteReview(UUID reviewId) {
         Optional<Review> review = reviewService.findForGame(id, reviewId);
         if (review.isPresent()) {
             String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
@@ -112,13 +112,15 @@ public class GameView implements Serializable {
             String reviewOwnerLogin = review.get().getUser().getLogin();
             
             // Check if user is owner or admin
-            if (!isAdmin && !reviewOwnerLogin.equals(currentUsername)) {
-                return "game_view.xhtml?id=" + id + "&faces-redirect=true&error=access_denied";
+            if (isAdmin || reviewOwnerLogin.equals(currentUsername)) {
+                reviewService.delete(review.get());
+                // Refresh the game data to update the reviews list
+                try {
+                    init();
+                } catch (IOException e) {
+                    // Handle exception if needed
+                }
             }
-            
-            reviewService.delete(review.get());
         }
-
-        return "game_view.xhtml?id=" + id + "&faces-redirect=true";
     }
 }
