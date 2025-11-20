@@ -79,6 +79,16 @@ public class ReviewEditView implements Serializable {
 
         Optional<Review> review = reviewService.find(reviewId);
         if (review.isPresent()) {
+            String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+            boolean isAdmin = FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
+            String reviewOwnerLogin = review.get().getUser().getLogin();
+            
+            // Check if user is owner or admin
+            if (!isAdmin && !reviewOwnerLogin.equals(currentUsername)) {
+                FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+                return;
+            }
+            
             this.review = factory.reviewToEditModel().apply(review.get());
         } else {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Character not found");

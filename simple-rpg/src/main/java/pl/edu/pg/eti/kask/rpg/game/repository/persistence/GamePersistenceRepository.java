@@ -48,24 +48,4 @@ public class GamePersistenceRepository implements GameRepository {
     public void update(Game entity) {
         entityManager.merge(entity);
     }
-
-//    @Override
-//    public Optional<Game> findByIdAndUser(UUID id, User user) {
-//        try {
-//            return Optional.of(entityManager.createQuery("select c from Games c where c.id = :id and c.user = :user", Game.class)
-//                    .setParameter("user", user)
-//                    .setParameter("id", id)
-//                    .getSingleResult());
-//        } catch (NoResultException ex) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public List<Character> findAllByUser(User user) {
-//        return entityManager.createQuery("select c from Games c where c.user = :user", Game.class)
-//                .setParameter("user", user)
-//                .getResultList();
-//    }
-
 }

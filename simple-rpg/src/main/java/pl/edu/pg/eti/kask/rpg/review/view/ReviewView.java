@@ -66,6 +66,16 @@ public class ReviewView implements Serializable {
     public void init() throws IOException {
         Optional<Review> review = reviewService.find(id);
         if (review.isPresent()) {
+            String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+            boolean isAdmin = FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
+            String reviewOwnerLogin = review.get().getUser().getLogin();
+            
+            // Check if user is owner or admin
+            if (!isAdmin && !reviewOwnerLogin.equals(currentUsername)) {
+                FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+                return;
+            }
+            
             this.review = factory.reviewToModel().apply(review.get());
             String username = userService.find(review.get().getUser().getId())
                     .map(User::getName)

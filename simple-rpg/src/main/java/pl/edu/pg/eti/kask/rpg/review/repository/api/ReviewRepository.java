@@ -13,5 +13,6 @@ public interface ReviewRepository extends Repository<Review, UUID> {
     public List<Review> findAllForUserAndGame(UUID userId, UUID gameId);
 
     public Optional<Review> findForGame(UUID reviewId, UUID gameId);
-    public Optional<Review> findForUserAndGame(UUID reviewId, UUID userId, UUID gameId);
+    public Optional<Review>
+    findForUserAndGame(UUID reviewId, UUID userId, UUID gameId);
 }
