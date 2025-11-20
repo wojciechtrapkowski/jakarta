@@ -46,4 +46,6 @@
         <fileset dir="${wlp.install.dir}/usr/servers/defaultServer/lib/global/" includes="h2-2.2.220.jar"/>
     </library>
 
+    <logging traceSpecification="*=info" consoleLogLevel="INFO"/>
+
 </server>

@@ -58,8 +58,6 @@ public class ReviewService {
 
         User user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName()).orElseThrow();
 
-        System.out.println(user.getLogin());
-
         return reviewRepository.findAllForUserAndGame(user.getId(), gameId);
     }
 
