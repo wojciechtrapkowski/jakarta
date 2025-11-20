@@ -1,11 +1,11 @@
 package pl.edu.pg.eti.kask.rpg.chat.service;
 
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.ejb.LocalBean;
-import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.chat.entity.Message;
 import pl.edu.pg.eti.kask.rpg.chat.event.MessageEvent;
@@ -25,8 +25,7 @@ import java.util.UUID;
 /**
  * Service for chat messages.
  */
-@LocalBean
-@Stateless
+@ApplicationScoped
 @Interceptors(OperationLoggingInterceptor.class)
 @NoArgsConstructor(force = true)
 public class MessageService {
@@ -49,6 +48,7 @@ public class MessageService {
      */
     @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
     @LogOperation("CREATE")
+    @Transactional
     public void sendBroadcastMessage(UUID senderId, String content) {
         User sender = userRepository.find(senderId).orElseThrow();
         
@@ -70,6 +70,7 @@ public class MessageService {
      */
     @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
     @LogOperation("CREATE")
+    @Transactional
     public void sendPrivateMessage(UUID senderId, UUID recipientId, String content) {
         User sender = userRepository.find(senderId).orElseThrow();
         User recipient = userRepository.find(recipientId).orElseThrow();
