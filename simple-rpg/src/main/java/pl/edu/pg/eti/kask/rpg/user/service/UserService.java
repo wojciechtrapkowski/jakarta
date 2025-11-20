@@ -7,9 +7,12 @@ import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -28,6 +31,7 @@ import java.util.UUID;
  */
 @LocalBean
 @Stateless
+@Interceptors(OperationLoggingInterceptor.class)
 @NoArgsConstructor(force = true)
 public class UserService {
 
@@ -81,15 +85,18 @@ public class UserService {
      *
      * @param user new user to be saved
      */
+    @LogOperation("CREATE")
     public void create(User user) {
 //        user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         userRepository.create(user);
     }
 
+    @LogOperation("UPDATE")
     public void update(User user) {
         userRepository.update(user);
     }
 
+    @LogOperation("DELETE")
     public void delete(User user) {
         userRepository.delete(user);
     }

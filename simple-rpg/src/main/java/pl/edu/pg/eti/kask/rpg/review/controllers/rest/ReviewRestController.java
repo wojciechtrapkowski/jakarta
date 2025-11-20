@@ -2,6 +2,7 @@ package pl.edu.pg.eti.kask.rpg.review.controllers.rest;
 
 import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -9,6 +10,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.game.service.GameService;
 import pl.edu.pg.eti.kask.rpg.review.controllers.api.ReviewController;
 import pl.edu.pg.eti.kask.rpg.review.dto.GetReviewResponse;
@@ -23,6 +26,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 @Path("")
+@Interceptors(OperationLoggingInterceptor.class)
 @Log
 public class ReviewRestController implements ReviewController {
 
@@ -77,6 +81,7 @@ public class ReviewRestController implements ReviewController {
     }
 
     @Override
+    @LogOperation("CREATE")
     public void createReview(UUID gameId, UUID reviewId, PutReviewRequest request) {
         try {
             if (reviewService.findForGame(gameId, reviewId).isPresent()) {
@@ -105,6 +110,7 @@ public class ReviewRestController implements ReviewController {
     }
 
     @Override
+    @LogOperation("UPDATE")
     public void updateReview(UUID gameId, UUID reviewId, PatchReviewRequest request) {
         try {
             Review existing = reviewService.findForGame(gameId, reviewId)
@@ -125,6 +131,7 @@ public class ReviewRestController implements ReviewController {
     }
 
     @Override
+    @LogOperation("DELETE")
     public void deleteReview(UUID gameId, UUID reviewId) {
         try {
             reviewService.findForGame(gameId, reviewId).ifPresentOrElse(
