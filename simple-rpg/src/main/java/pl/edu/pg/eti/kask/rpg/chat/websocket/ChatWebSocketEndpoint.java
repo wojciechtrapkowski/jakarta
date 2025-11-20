@@ -4,18 +4,19 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
-import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * WebSocket endpoint for chat.
  */
 @ServerEndpoint("/chat")
-@Log
 public class ChatWebSocketEndpoint {
+
+    private static final Logger log = Logger.getLogger(ChatWebSocketEndpoint.class.getName());
 
     // Map of userId to WebSocket sessions (static to share across all instances)
     private static final ConcurrentHashMap<UUID, Session> sessions = new ConcurrentHashMap<>();
