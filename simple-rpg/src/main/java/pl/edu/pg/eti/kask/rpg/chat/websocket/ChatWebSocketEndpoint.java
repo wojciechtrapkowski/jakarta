@@ -1,19 +1,12 @@
 package pl.edu.pg.eti.kask.rpg.chat.websocket;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.java.Log;
-import pl.edu.pg.eti.kask.rpg.chat.event.MessageEvent;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,11 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * WebSocket endpoint for chat.
  */
 @ServerEndpoint("/chat")
-@ApplicationScoped
 @Log
 public class ChatWebSocketEndpoint {
 
-    // Map of userId to WebSocket sessions
+    // Map of userId to WebSocket sessions (static to share across all instances)
     private static final ConcurrentHashMap<UUID, Session> sessions = new ConcurrentHashMap<>();
 
     @OnOpen
@@ -64,37 +56,9 @@ public class ChatWebSocketEndpoint {
     }
 
     /**
-     * CDI observer for message events.
+     * Broadcast a message to all connected users.
      */
-    public void onMessageEvent(@Observes MessageEvent event) {
-        log.info("Message event received: " + event.getContent());
-        
-        JsonObject jsonMessage = Json.createObjectBuilder()
-                .add("messageId", event.getMessageId().toString())
-                .add("senderId", event.getSenderId().toString())
-                .add("senderLogin", event.getSenderLogin())
-                .add("content", event.getContent())
-                .add("timestamp", event.getTimestamp())
-                .add("broadcast", event.isBroadcast())
-                .add("recipientId", event.getRecipientId() != null ? event.getRecipientId().toString() : "")
-                .build();
-
-        StringWriter writer = new StringWriter();
-        Json.createWriter(writer).write(jsonMessage);
-        String messageText = writer.toString();
-
-        if (event.isBroadcast()) {
-            // Send to all connected users
-            broadcastMessage(messageText);
-        } else {
-            // Send to specific user
-            sendToUser(event.getRecipientId(), messageText);
-            // Also send to sender for confirmation
-            sendToUser(event.getSenderId(), messageText);
-        }
-    }
-
-    private void broadcastMessage(String message) {
+    public static void broadcastMessage(String message) {
         sessions.values().forEach(session -> {
             if (session.isOpen()) {
                 try {
@@ -106,7 +70,10 @@ public class ChatWebSocketEndpoint {
         });
     }
 
-    private void sendToUser(UUID userId, String message) {
+    /**
+     * Send a message to a specific user.
+     */
+    public static void sendToUser(UUID userId, String message) {
         Session session = sessions.get(userId);
         if (session != null && session.isOpen()) {
             try {

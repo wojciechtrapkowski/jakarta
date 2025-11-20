@@ -93,9 +93,14 @@
                     if (xhr.status === 200) {
                         document.getElementById('messageContent').value = '';
                     } else {
-                        console.error('Error sending message:', xhr.responseText);
-                        alert('Error sending message');
+                        console.error('Error sending message. Status:', xhr.status, 'Response:', xhr.responseText);
+                        alert('Error sending message: ' + xhr.status);
                     }
+                };
+                
+                xhr.onerror = function() {
+                    console.error('Network error sending message');
+                    alert('Network error sending message');
                 };
                 
                 xhr.send(JSON.stringify({
