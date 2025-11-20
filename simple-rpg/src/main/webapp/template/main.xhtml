@@ -35,6 +35,13 @@
                             <h:link styleClass="nav-link" outcome="/game/games_list.xhtml">Games</h:link>
                         </li>
                     </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item" rendered="#{request.userPrincipal != null}">
+                            <span class="navbar-text me-3">
+                                Logged in as: <strong>#{request.userPrincipal.name}</strong>
+                            </span>
+                        </li>
+                    </ul>
                 </div>
             </nav>
 

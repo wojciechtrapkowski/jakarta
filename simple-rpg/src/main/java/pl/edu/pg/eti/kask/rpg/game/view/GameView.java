@@ -74,8 +74,19 @@ public class GameView implements Serializable {
     public void init() throws IOException {
         Optional<Game> game = gameService.find(id);
         if (game.isPresent()) {
+            String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+            boolean isAdmin = FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
+            
             List<ReviewModel> reviewModels = reviewService.findAllForGame(game.get().getId())
                     .stream()
+                    .filter(review -> {
+                        // Admins see all reviews, regular users see only their own
+                        if (isAdmin) {
+                            return true;
+                        }
+                        String reviewOwnerLogin = review.getUser().getLogin();
+                        return reviewOwnerLogin.equals(currentUsername);
+                    })
                     .map(review -> {
                         ReviewModel model = factory.reviewToModel().apply(review);
                         // fetch username
@@ -94,7 +105,19 @@ public class GameView implements Serializable {
     }
 
     public String deleteReview(UUID reviewId) {
-        reviewService.delete(reviewService.findForGame(id, reviewId).orElseThrow());
+        Optional<Review> review = reviewService.findForGame(id, reviewId);
+        if (review.isPresent()) {
+            String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+            boolean isAdmin = FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
+            String reviewOwnerLogin = review.get().getUser().getLogin();
+            
+            // Check if user is owner or admin
+            if (!isAdmin && !reviewOwnerLogin.equals(currentUsername)) {
+                return "game_view.xhtml?id=" + id + "&faces-redirect=true&error=access_denied";
+            }
+            
+            reviewService.delete(review.get());
+        }
 
         return "game_view.xhtml?id=" + id + "&faces-redirect=true";
     }

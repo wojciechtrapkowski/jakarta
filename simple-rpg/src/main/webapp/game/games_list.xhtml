@@ -34,7 +34,7 @@
 
                 <h:column>
                     <f:facet name="header">Delete</f:facet>
-                    <h:form>
+                    <h:form rendered="#{request.isUserInRole('admin')}">
                         <h:commandButton styleClass="btn" value="Delete"
                                          action="#{gamesList.deleteAction(game)}"/>
                     </h:form>

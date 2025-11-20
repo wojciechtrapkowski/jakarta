@@ -37,11 +37,12 @@
 
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>game</web-resource-name>
+            <web-resource-name>games</web-resource-name>
             <url-pattern>/game/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>user</role-name>
+            <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -52,6 +53,7 @@
         </web-resource-collection>
         <auth-constraint>
             <role-name>user</role-name>
+            <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
 

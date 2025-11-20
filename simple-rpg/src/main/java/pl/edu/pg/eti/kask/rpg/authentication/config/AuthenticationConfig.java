@@ -22,13 +22,13 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
  * Both form based methods required {@link LoginToContinue} configuration.
  */
 @ApplicationScoped
-@BasicAuthenticationMechanismDefinition(realmName = "Simple RPG")
-//@FormAuthenticationMechanismDefinition(
-//        loginToContinue = @LoginToContinue(
-//                loginPage = "/authentication/form/login.xhtml",
-//                errorPage = "/authentication/form/login_error.xhtml"
-//        )
-//)
+//@BasicAuthenticationMechanismDefinition(realmName = "Simple RPG")
+@FormAuthenticationMechanismDefinition(
+        loginToContinue = @LoginToContinue(
+                loginPage = "/authentication/form/login.xhtml",
+                errorPage = "/authentication/form/login_error.xhtml"
+        )
+)
 //@CustomFormAuthenticationMechanismDefinition(
 //        loginToContinue = @LoginToContinue(
 //                loginPage = "/authentication/custom/login.xhtml",
