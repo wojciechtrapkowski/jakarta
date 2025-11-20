@@ -4,12 +4,14 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.ForbiddenException;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
@@ -24,6 +26,7 @@ import java.util.logging.Level;
 
 @LocalBean
 @Stateless
+@Interceptors(OperationLoggingInterceptor.class)
 @NoArgsConstructor(force = true)
 public class ReviewService {
     private final UserRepository  userRepository;

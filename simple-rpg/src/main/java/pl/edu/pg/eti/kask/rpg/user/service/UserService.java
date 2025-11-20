@@ -7,10 +7,12 @@ import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
 import pl.edu.pg.eti.kask.rpg.crypto.component.Pbkdf2PasswordHash;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -29,6 +31,7 @@ import java.util.UUID;
  */
 @LocalBean
 @Stateless
+@Interceptors(OperationLoggingInterceptor.class)
 @NoArgsConstructor(force = true)
 public class UserService {
 

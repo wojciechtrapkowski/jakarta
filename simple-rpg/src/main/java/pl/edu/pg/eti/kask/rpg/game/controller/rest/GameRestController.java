@@ -2,6 +2,7 @@ package pl.edu.pg.eti.kask.rpg.game.controller.rest;
 
 import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.UriInfo;
 import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.component.DtoFunctionFactory;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
+import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.game.controller.api.GameController;
 import pl.edu.pg.eti.kask.rpg.game.dto.GetGameResponse;
 import pl.edu.pg.eti.kask.rpg.game.dto.GetGamesResponse;
@@ -24,6 +26,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 @Path("")
+@Interceptors(OperationLoggingInterceptor.class)
 @Log
 public class GameRestController implements GameController {
 

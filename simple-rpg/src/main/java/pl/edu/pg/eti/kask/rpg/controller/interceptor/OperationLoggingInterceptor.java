@@ -2,7 +2,6 @@ package pl.edu.pg.eti.kask.rpg.controller.interceptor;
 
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 import jakarta.security.enterprise.SecurityContext;
 import lombok.extern.java.Log;
@@ -13,9 +12,8 @@ import java.util.logging.Level;
 /**
  * Interceptor for logging user operations on resources.
  * Logs the username, operation name, and resource identifier.
+ * Works with both EJB and CDI beans.
  */
-@Interceptor
-@LogOperation("")
 @Log
 public class OperationLoggingInterceptor {
 
