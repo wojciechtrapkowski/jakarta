@@ -56,7 +56,7 @@ function displayChatMessage(message) {
  * @returns {string} The escaped text
  */
 function escapeHtml(text) {
-    if (!text) return '';
+    if (!text || typeof text !== 'string') return '';
     var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;

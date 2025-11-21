@@ -18,11 +18,38 @@ import java.io.Serializable;
 @Builder
 public class Message implements Serializable {
     
+    /**
+     * Unique message identifier (UUID string format).
+     */
     private String messageId;
+    
+    /**
+     * Sender's user identifier (UUID string format).
+     */
     private String senderId;
+    
+    /**
+     * Sender's login name.
+     */
     private String senderLogin;
+    
+    /**
+     * Message content.
+     */
     private String content;
+    
+    /**
+     * Message timestamp in ISO_LOCAL_DATE_TIME format.
+     */
     private String timestamp;
+    
+    /**
+     * Whether this is a broadcast message (true) or private message (false).
+     */
     private boolean broadcast;
+    
+    /**
+     * Recipient's user identifier (UUID string format), null for broadcast messages.
+     */
     private String recipientId;
 }
