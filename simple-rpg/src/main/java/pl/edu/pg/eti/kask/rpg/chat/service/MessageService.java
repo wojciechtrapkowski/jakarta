@@ -86,6 +86,7 @@ public class MessageService {
                 message.getSender().getId(),
                 message.getSender().getLogin(),
                 message.getRecipient() != null ? message.getRecipient().getId() : null,
+                message.getRecipient() != null ? message.getRecipient().getLogin() : null,
                 message.getContent(),
                 message.isBroadcast(),
                 message.getTimestamp().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)

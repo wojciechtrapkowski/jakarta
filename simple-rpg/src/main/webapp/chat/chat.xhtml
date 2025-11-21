@@ -9,72 +9,8 @@
 
     <ui:define name="content">
         <h:outputScript>
-            var ws;
-            var currentUserId = '#{chatView.currentUserId}';
-            
-            function connectWebSocket() {
-                var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                var wsUrl = protocol + '//' + window.location.host + '#{request.contextPath}/chat';
-                
-                ws = new WebSocket(wsUrl);
-                
-                ws.onopen = function() {
-                    console.log('WebSocket connected');
-                    // Register user
-                    ws.send(JSON.stringify({
-                        type: 'register',
-                        userId: currentUserId
-                    }));
-                };
-                
-                ws.onmessage = function(event) {
-                    console.log('Message received:', event.data);
-                    var message = JSON.parse(event.data);
-                    displayMessage(message);
-                };
-                
-                ws.onerror = function(error) {
-                    console.error('WebSocket error:', error);
-                };
-                
-                ws.onclose = function() {
-                    console.log('WebSocket disconnected');
-                    // Attempt to reconnect after 3 seconds
-                    setTimeout(connectWebSocket, 3000);
-                };
-            }
-            
-            function displayMessage(message) {
-                var messagesDiv = document.getElementById('messages');
-                var messageElement = document.createElement('div');
-                messageElement.className = 'card mb-2';
-                
-                var isCurrentUser = message.senderId === currentUserId;
-                var cardClass = isCurrentUser ? 'bg-light' : 'bg-white';
-                messageElement.className += ' ' + cardClass;
-                
-                var timestamp = new Date(message.timestamp).toLocaleTimeString();
-                var recipientInfo = '';
-                if (!message.broadcast) {
-                    recipientInfo = ' <span class="text-muted">(private)</span>';
-                }
-                
-                messageElement.innerHTML = 
-                    '<div class="card-body p-2">' +
-                    '<strong>' + escapeHtml(message.senderLogin) + '</strong>' + recipientInfo +
-                    ' <span class="text-muted small">' + timestamp + '</span>' +
-                    '<div>' + escapeHtml(message.content) + '</div>' +
-                    '</div>';
-                
-                messagesDiv.appendChild(messageElement);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
-            
-            function escapeHtml(text) {
-                var div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
+            // Store current user ID for message handling
+            window.currentUserId = '#{chatView.currentUserId}';
             
             function sendMessage() {
                 var content = document.getElementById('messageContent').value;
@@ -112,15 +48,16 @@
             }
             
             window.onload = function() {
-                connectWebSocket();
-                
                 // Handle Enter key
-                document.getElementById('messageContent').addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' &amp;&amp; !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
+                var messageInput = document.getElementById('messageContent');
+                if (messageInput) {
+                    messageInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter' &amp;&amp; !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                        }
+                    });
+                }
             };
         </h:outputScript>
 

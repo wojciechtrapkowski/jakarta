@@ -19,6 +19,7 @@ public class MessageEvent {
     private UUID senderId;
     private String senderLogin;
     private UUID recipientId;
+    private String recipientLogin;
     private String content;
     private boolean broadcast;
     private String timestamp;
