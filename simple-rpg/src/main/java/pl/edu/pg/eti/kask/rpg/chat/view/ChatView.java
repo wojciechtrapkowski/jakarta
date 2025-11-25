@@ -1,12 +1,13 @@
 package pl.edu.pg.eti.kask.rpg.chat.view;
 
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.security.enterprise.SecurityContext;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.chat.event.MessageEvent;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
@@ -22,8 +23,9 @@ import java.util.UUID;
  * Messages are sent directly via JSF actions which fire CDI events.
  * Push notifications are handled via JSF Push API.
  */
-@SessionScoped
+@ViewScoped
 @Named
+@Log
 public class ChatView implements Serializable {
 
     private final UserService userService;
@@ -93,21 +95,27 @@ public class ChatView implements Serializable {
             );
         } else {
             // Private message
-            UUID recipientUUID = UUID.fromString(recipientId);
-            User recipient = userService.find(recipientUUID).orElse(null);
-            if (recipient == null) {
+            try {
+                UUID recipientUUID = UUID.fromString(recipientId);
+                User recipient = userService.find(recipientUUID).orElse(null);
+                if (recipient == null) {
+                    log.warning("Recipient not found: " + recipientId);
+                    return;
+                }
+                event = new MessageEvent(
+                        UUID.randomUUID(),
+                        sender.getId(),
+                        sender.getLogin(),
+                        recipient.getId(),
+                        recipient.getLogin(),
+                        messageContent,
+                        false,
+                        LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                );
+            } catch (IllegalArgumentException e) {
+                log.warning("Invalid recipient ID format: " + recipientId);
                 return;
             }
-            event = new MessageEvent(
-                    UUID.randomUUID(),
-                    sender.getId(),
-                    sender.getLogin(),
-                    recipient.getId(),
-                    recipient.getLogin(),
-                    messageContent,
-                    false,
-                    LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            );
         }
 
         // Fire the CDI event - PushMessageObserver will handle pushing to clients
