@@ -12,53 +12,13 @@
             // Store current user ID for message handling
             window.currentUserId = '#{chatView.currentUserId}';
             
-            function sendMessage() {
-                var content = document.getElementById('messageContent').value;
-                var recipientSelect = document.getElementById('recipientSelect');
-                var recipientId = recipientSelect.value;
-                
-                if (!content.trim()) {
-                    return;
+            // Function to handle Enter key for sending messages
+            function handleKeyPress(event) {
+                if (event.key === 'Enter' &amp;&amp; !event.shiftKey) {
+                    event.preventDefault();
+                    document.getElementById('chatForm:sendBtn').click();
                 }
-                
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '#{request.contextPath}/api/chat/send', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        document.getElementById('messageContent').value = '';
-                    } else {
-                        console.error('Error sending message. Status:', xhr.status, 'Response:', xhr.responseText);
-                        alert('Error sending message: ' + xhr.status);
-                    }
-                };
-                
-                xhr.onerror = function() {
-                    console.error('Network error sending message');
-                    alert('Network error sending message');
-                };
-                
-                xhr.send(JSON.stringify({
-                    content: content,
-                    recipientId: recipientId
-                }));
-                
-                return false;
             }
-            
-            window.onload = function() {
-                // Handle Enter key
-                var messageInput = document.getElementById('messageContent');
-                if (messageInput) {
-                    messageInput.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter' &amp;&amp; !e.shiftKey) {
-                            e.preventDefault();
-                            sendMessage();
-                        }
-                    });
-                }
-            };
         </h:outputScript>
 
         <article>
@@ -74,30 +34,35 @@
                                 <h5>#{msg['chat.messages']}</h5>
                             </div>
                             <div class="card-body" style="height: 400px; overflow-y: auto;" id="messages">
-                                <!-- Messages will be added here via JavaScript -->
+                                <!-- Messages will be added here via JSF Push -->
                             </div>
                             <div class="card-footer">
-                                <div class="row g-2">
-                                    <div class="col-md-3">
-                                        <label for="recipientSelect" class="form-label">#{msg['chat.sendTo']}</label>
-                                        <select class="form-select" id="recipientSelect">
-                                            <option value="">#{msg['chat.everyone']}</option>
-                                            <ui:repeat value="#{chatView.allUsers}" var="user">
-                                                <option value="#{user.id}">#{user.login}</option>
-                                            </ui:repeat>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <label for="messageContent" class="form-label">#{msg['chat.message']}</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="messageContent" 
-                                                   placeholder="#{msg['chat.typeMessage']}" />
-                                            <button class="btn btn-primary" type="button" onclick="sendMessage()">
-                                                #{msg['chat.send']}
-                                            </button>
+                                <h:form id="chatForm">
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <label for="chatForm:recipientSelect" class="form-label">#{msg['chat.sendTo']}</label>
+                                            <h:selectOneMenu id="recipientSelect" value="#{chatView.recipientId}" styleClass="form-select">
+                                                <f:selectItem itemValue="" itemLabel="#{msg['chat.everyone']}" />
+                                                <f:selectItems value="#{chatView.allUsers}" var="user" 
+                                                               itemValue="#{user.id}" itemLabel="#{user.login}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label for="chatForm:messageContent" class="form-label">#{msg['chat.message']}</label>
+                                            <div class="input-group">
+                                                <h:inputText id="messageContent" value="#{chatView.messageContent}" 
+                                                             styleClass="form-control" 
+                                                             onkeypress="handleKeyPress(event)"
+                                                             placeholder="#{msg['chat.typeMessage']}" />
+                                                <h:commandButton id="sendBtn" value="#{msg['chat.send']}" 
+                                                                 action="#{chatView.sendMessage()}"
+                                                                 styleClass="btn btn-primary">
+                                                    <f:ajax execute="@form" render="messageContent" />
+                                                </h:commandButton>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </h:form>
                             </div>
                         </div>
                     </div>
