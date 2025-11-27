@@ -4,7 +4,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import pl.edu.pg.eti.kask.rpg.review.dto.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Path("")
@@ -19,10 +18,10 @@ public interface ReviewController {
                                   @QueryParam("maxMark") Double maxMark,
                                   @QueryParam("userId") UUID userId,
                                   @QueryParam("version") Long version,
-                                  @QueryParam("createdAfter") LocalDateTime createdAfter,
-                                  @QueryParam("createdBefore") LocalDateTime createdBefore,
-                                  @QueryParam("modifiedAfter") LocalDateTime modifiedAfter,
-                                  @QueryParam("modifiedBefore") LocalDateTime modifiedBefore);
+                                  @QueryParam("createdAfter") String createdAfter,
+                                  @QueryParam("createdBefore") String createdBefore,
+                                  @QueryParam("modifiedAfter") String modifiedAfter,
+                                  @QueryParam("modifiedBefore") String modifiedBefore);
 
     @GET
     @Path("/games/{gameId}/reviews/{reviewId}")
