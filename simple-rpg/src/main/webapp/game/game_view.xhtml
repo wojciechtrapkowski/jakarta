@@ -53,6 +53,10 @@
                         <h:outputText value="#{review.mark}" />
                     </h:column>
                     <h:column>
+                        <f:facet name="header">#{msg['game.version']}</f:facet>
+                        <h:outputText value="#{review.version}" />
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">#{msg['game.view']}</f:facet>
                         <h:link outcome="/review/review_view.xhtml" value="#{msg['game.view']}">
                             <f:param name="id" value="#{review.id}"/>

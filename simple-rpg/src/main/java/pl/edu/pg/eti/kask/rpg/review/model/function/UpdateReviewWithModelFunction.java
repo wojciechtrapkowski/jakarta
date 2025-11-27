@@ -17,6 +17,7 @@ public class UpdateReviewWithModelFunction implements BiFunction<Review, ReviewE
                 .description(request.getDescription())
                 .mark(request.getMark())
                 .dateOfCreation(review.getDateOfCreation())
+                .version(request.getVersion())
                 .game(request.getGame())
                 .user(review.getUser())
                 .build();

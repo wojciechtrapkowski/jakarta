@@ -29,6 +29,7 @@ import java.util.UUID;
 public class ReviewEditModel {
     private String description;
     private double mark;
+    private Long version;
     private Game game;
     private User user;
 }
