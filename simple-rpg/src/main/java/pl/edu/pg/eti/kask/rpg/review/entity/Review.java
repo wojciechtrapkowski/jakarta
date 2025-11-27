@@ -29,6 +29,9 @@ public class Review implements Serializable {
     private LocalDate dateOfCreation;
     private double mark;
 
+    @Version
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;

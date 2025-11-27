@@ -20,6 +20,7 @@ public class ReviewModel {
     private String description;
     private LocalDate dateOfCreation;
     private double mark;
+    private Long version;
 
     private Game game;
     private User user;

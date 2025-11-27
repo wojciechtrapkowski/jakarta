@@ -13,7 +13,59 @@
     <ui:define name="content">
         <article>
             <header><h2>#{msg['review.edit.title']}</h2></header>
+            
+            <!-- Display version conflict warning if applicable -->
+            <h:panelGroup rendered="#{reviewEditView.versionConflict}">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">#{msg['review.edit.conflict.title']}</h4>
+                    <p>#{msg['review.edit.conflict.message']}</p>
+                    <hr/>
+                    
+                    <div class="row">
+                        <!-- Current database data -->
+                        <div class="col-6">
+                            <h5>#{msg['review.edit.conflict.currentData']}</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#{msg['review.edit.conflict.description']}</th>
+                                    <td><h:outputText value="#{reviewEditView.currentDatabaseReview.description}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>#{msg['review.edit.conflict.mark']}</th>
+                                    <td><h:outputText value="#{reviewEditView.currentDatabaseReview.mark}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>#{msg['review.edit.conflict.game']}</th>
+                                    <td><h:outputText value="#{reviewEditView.currentDatabaseReview.game.name}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- User's submitted data -->
+                        <div class="col-6">
+                            <h5>#{msg['review.edit.conflict.yourData']}</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#{msg['review.edit.conflict.description']}</th>
+                                    <td><h:outputText value="#{reviewEditView.userSubmittedReview.description}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>#{msg['review.edit.conflict.mark']}</th>
+                                    <td><h:outputText value="#{reviewEditView.userSubmittedReview.mark}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>#{msg['review.edit.conflict.game']}</th>
+                                    <td><h:outputText value="#{reviewEditView.userSubmittedReview.game.name}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </h:panelGroup>
+            
             <h:form styleClass="container">
+                <!-- Hidden field for version -->
+                <h:inputHidden id="version" value="#{reviewEditView.review.version}"/>
 
                 <!-- Game selection dropdown -->
                 <!-- Here we should use converter, but I don't see any point - we work on UUIDS. -->
@@ -46,11 +98,25 @@
                 <!-- Buttons -->
                 <div class="row mt-3">
                     <div class="col-2 p-2 text-center">
-                        <h:commandButton styleClass="btn btn-primary" value="#{msg['review.edit.save']}" action="#{reviewEditView.saveAction()}"/>
+                        <h:commandButton styleClass="btn btn-primary"
+                                         value="#{msg['review.edit.save']}"
+                                         action="#{reviewEditView.saveAction()}"
+                                         rendered="#{not reviewEditView.versionConflict}" />
                     </div>
                     <div class="col-2 p-2 text-center">
-                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="#{msg['review.edit.reset']}"/>
+                        <h:commandButton styleClass="btn btn-secondary"
+                                         type="reset"
+                                         value="#{msg['review.edit.reset']}"
+                                         rendered="#{not reviewEditView.versionConflict}" />
                     </div>
+                    <h:panelGroup rendered="#{reviewEditView.versionConflict}">
+                        <div class="col-2 p-2 text-center">
+                            <h:commandButton styleClass="btn btn-info" value="#{msg['review.edit.conflict.retry']}" action="#{reviewEditView.retryWithCurrentData()}"/>
+                        </div>
+                        <div class="col-2 p-2 text-center">
+                            <h:commandButton styleClass="btn btn-warning" value="#{msg['review.edit.conflict.cancel']}" action="#{reviewEditView.cancelAction()}" immediate="true"/>
+                        </div>
+                    </h:panelGroup>
                 </div>
 
             </h:form>
