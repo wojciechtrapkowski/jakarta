@@ -33,7 +33,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class ReviewEditModel {
     @NotBlank(message = "{validation.description.notblank}")
-    @Size(min = 10, max = 1000, message = "{validation.description.size}")
+    @Size(min = 0, max = 50, message = "{validation.description.size}")
     private String description;
 
     @ValidMark
