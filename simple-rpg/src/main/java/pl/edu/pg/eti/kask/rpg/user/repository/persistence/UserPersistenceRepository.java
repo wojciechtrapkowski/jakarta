@@ -1,12 +1,13 @@
 package pl.edu.pg.eti.kask.rpg.user.repository.persistence;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import pl.edu.pg.eti.kask.rpg.game.entity.Game;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
@@ -30,9 +31,15 @@ public class UserPersistenceRepository implements UserRepository {
     @Override
     public Optional<User> findByLogin(String login) {
         try {
-            return Optional.of(entityManager.createQuery("select u from User u where u.login = :login", User.class)
-                    .setParameter("login", login)
-                    .getSingleResult());
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> cq = cb.createQuery(User.class);
+            Root<User> root = cq.from(User.class);
+            
+            Predicate loginPredicate = cb.equal(root.get("login"), login);
+            
+            cq.select(root).where(loginPredicate);
+            
+            return Optional.of(entityManager.createQuery(cq).getSingleResult());
         } catch (NoResultException ex) {
             return Optional.empty();
         }
@@ -41,7 +48,11 @@ public class UserPersistenceRepository implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return entityManager.createQuery("select u from User u", User.class).getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+        cq.select(root);
+        return entityManager.createQuery(cq).getResultList();
     }
 
 

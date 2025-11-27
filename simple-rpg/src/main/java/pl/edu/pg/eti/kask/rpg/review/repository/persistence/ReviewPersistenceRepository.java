@@ -1,12 +1,13 @@
 package pl.edu.pg.eti.kask.rpg.review.repository.persistence;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import pl.edu.pg.eti.kask.rpg.game.entity.Game;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
 
@@ -29,27 +30,36 @@ public class ReviewPersistenceRepository implements ReviewRepository {
 
     public Optional<Review> findForGame(UUID reviewId, UUID gameId) {
         try {
-            Review review = entityManager.createQuery(
-                            "SELECT r FROM Review r WHERE r.id = :reviewId AND r.game.id = :gameId", Review.class)
-                    .setParameter("reviewId", reviewId)
-                    .setParameter("gameId", gameId)
-                    .getSingleResult();
-
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+            Root<Review> root = cq.from(Review.class);
+            
+            Predicate reviewIdPredicate = cb.equal(root.get("id"), reviewId);
+            Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+            
+            cq.select(root).where(cb.and(reviewIdPredicate, gameIdPredicate));
+            
+            Review review = entityManager.createQuery(cq).getSingleResult();
             return Optional.of(review);
         }
         catch (NoResultException e) {
             return Optional.empty();
         }
     }
+
     public Optional<Review> findForUserAndGame(UUID reviewId, UUID userId, UUID gameId) {
         try {
-            Review review = entityManager.createQuery(
-                            "SELECT r FROM Review r WHERE r.id = :reviewId AND r.user.id = :userId AND r.game.id = :gameId", Review.class)
-                    .setParameter("reviewId", reviewId)
-                    .setParameter("userId", userId)
-                    .setParameter("gameId", gameId)
-                    .getSingleResult();
-
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+            Root<Review> root = cq.from(Review.class);
+            
+            Predicate reviewIdPredicate = cb.equal(root.get("id"), reviewId);
+            Predicate userIdPredicate = cb.equal(root.get("user").get("id"), userId);
+            Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+            
+            cq.select(root).where(cb.and(reviewIdPredicate, userIdPredicate, gameIdPredicate));
+            
+            Review review = entityManager.createQuery(cq).getSingleResult();
             return Optional.of(review);
         } catch (NoResultException e) {
             return Optional.empty();
@@ -58,21 +68,34 @@ public class ReviewPersistenceRepository implements ReviewRepository {
 
     @Override
     public List<Review> findAll() {
-        return entityManager.createQuery("select r from Review r", Review.class).getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+        Root<Review> root = cq.from(Review.class);
+        cq.select(root);
+        return entityManager.createQuery(cq).getResultList();
     }
 
     public List<Review> findAllForGame(UUID gameId) {
-        return entityManager.createQuery(
-                        "SELECT r FROM Review r WHERE r.game.id = :gameId", Review.class)
-                .setParameter("gameId", gameId)
-                .getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+        Root<Review> root = cq.from(Review.class);
+        
+        Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+        
+        cq.select(root).where(gameIdPredicate);
+        return entityManager.createQuery(cq).getResultList();
     }
 
     public List<Review> findAllForUserAndGame(UUID userId, UUID gameId) {
-        return entityManager.createQuery(
-                        "SELECT r FROM Review r WHERE r.user.id = :userId AND r.game.id = :gameId", Review.class)
-                .setParameter("userId", userId).setParameter("gameId", gameId)
-                .getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+        Root<Review> root = cq.from(Review.class);
+        
+        Predicate userIdPredicate = cb.equal(root.get("user").get("id"), userId);
+        Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+        
+        cq.select(root).where(cb.and(userIdPredicate, gameIdPredicate));
+        return entityManager.createQuery(cq).getResultList();
     }
 
     @Override

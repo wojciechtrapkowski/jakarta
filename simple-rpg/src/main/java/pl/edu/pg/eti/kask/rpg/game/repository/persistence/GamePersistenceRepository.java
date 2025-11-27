@@ -1,14 +1,13 @@
 package pl.edu.pg.eti.kask.rpg.game.repository.persistence;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.repository.api.GameRepository;
-import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,11 @@ public class GamePersistenceRepository implements GameRepository {
 
     @Override
     public List<Game> findAll() {
-        return entityManager.createQuery("select g from Game g", Game.class).getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Game> cq = cb.createQuery(Game.class);
+        Root<Game> root = cq.from(Game.class);
+        cq.select(root);
+        return entityManager.createQuery(cq).getResultList();
     }
 
 
