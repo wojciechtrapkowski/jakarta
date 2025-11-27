@@ -22,6 +22,7 @@ import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -150,7 +151,7 @@ public class InitData {
             var review1 = Review.builder()
                     .id(UUID.fromString("ed6cfb2a-cad7-47dd-9b56-9d1e3c7b4117"))
                     .description("Great gameplay and stunning graphics!")
-                    .dateOfCreation(LocalDate.now().minusDays(5))
+                    .dateOfCreation(LocalDateTime.now().minusDays(5))
                     .mark(9.5)
                     .user(kevin)
                     .game(dragonQuest)
@@ -159,7 +160,7 @@ public class InitData {
             var review2 = Review.builder()
                     .id(UUID.randomUUID())
                     .description("Very immersive story, loved the characters.")
-                    .dateOfCreation(LocalDate.now().minusDays(3))
+                    .dateOfCreation(LocalDateTime.now().minusDays(3))
                     .mark(8.7)
                     .user(alice)
                     .game(witcher3)
@@ -168,7 +169,7 @@ public class InitData {
             var review3 = Review.builder()
                     .id(UUID.randomUUID())
                     .description("Not bad, but a bit repetitive after some time.")
-                    .dateOfCreation(LocalDate.now().minusDays(1))
+                    .dateOfCreation(LocalDateTime.now().minusDays(1))
                     .mark(6.8)
                     .user(bob)
                     .game(cyberpunk)

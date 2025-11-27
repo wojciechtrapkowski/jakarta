@@ -13,6 +13,7 @@ import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -32,4 +33,5 @@ public class ReviewEditModel {
     private Long version;
     private Game game;
     private User user;
+    private LocalDateTime dateOfCreation;
 }

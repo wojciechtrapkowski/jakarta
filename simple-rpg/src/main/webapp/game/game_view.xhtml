@@ -57,6 +57,18 @@
                         <h:outputText value="#{review.version}" />
                     </h:column>
                     <h:column>
+                        <f:facet name="header">#{msg['game.creationDate']}</f:facet>
+                        <h:outputText value="#{review.creationDate}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['game.modificationDate']}</f:facet>
+                        <h:outputText value="#{review.modificationDate}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">#{msg['game.view']}</f:facet>
                         <h:link outcome="/review/review_view.xhtml" value="#{msg['game.view']}">
                             <f:param name="id" value="#{review.id}"/>

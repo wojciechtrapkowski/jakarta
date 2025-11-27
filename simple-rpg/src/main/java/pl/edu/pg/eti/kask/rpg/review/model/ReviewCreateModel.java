@@ -7,6 +7,7 @@ import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -21,5 +22,5 @@ public class ReviewCreateModel {
     private double mark;
     private Game game;
     private User user;
-    private LocalDate dateOfCreation;
+    private LocalDateTime dateOfCreation;
 }

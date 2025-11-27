@@ -64,7 +64,7 @@ public class ReviewCreateView implements Serializable {
     }
 
     public String saveAction() {
-        review.setDateOfCreation(java.time.LocalDate.now());
+        review.setDateOfCreation(java.time.LocalDateTime.now());
 
         review.setUser(userService.findAll().stream()
                 .findFirst()

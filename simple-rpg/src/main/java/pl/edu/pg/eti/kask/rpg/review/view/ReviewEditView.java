@@ -118,6 +118,10 @@ public class ReviewEditView implements Serializable {
 
     public String saveAction() {
         try {
+            // Fetch the full Game entity using the game ID from the form
+            Game selectedGame = gameService.find(review.getGame().getId()).orElseThrow();
+            review.setGame(selectedGame);
+            
             reviewService.update(factory.updateReview().apply(reviewService.find(reviewId).orElseThrow(), review));
             return "/game/game_view.xhtml?faces-redirect=true&id=" + review.getGame().getId();
         } catch (EJBException e) {
@@ -130,6 +134,7 @@ public class ReviewEditView implements Serializable {
             handleVersionConflict();
             return null; // Stay on the same page
         }
+
     }
 
     /**
@@ -157,6 +162,7 @@ public class ReviewEditView implements Serializable {
                 .description(review.getDescription())
                 .mark(review.getMark())
                 .version(review.getVersion())
+                .dateOfCreation(review.getDateOfCreation())
                 .game(review.getGame())
                 .user(review.getUser())
                 .build();

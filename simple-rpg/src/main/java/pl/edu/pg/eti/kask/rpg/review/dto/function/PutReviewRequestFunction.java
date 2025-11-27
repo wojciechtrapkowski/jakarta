@@ -4,6 +4,7 @@ import pl.edu.pg.eti.kask.rpg.review.dto.PutReviewRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -15,7 +16,7 @@ public class PutReviewRequestFunction implements BiFunction<UUID, PutReviewReque
                 .id(id)
                 .description(request.getDescription())
                 .mark(request.getMark())
-                .dateOfCreation(LocalDate.now())
+                .dateOfCreation(LocalDateTime.now())
                 .build();
     }
 }

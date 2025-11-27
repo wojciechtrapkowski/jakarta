@@ -8,6 +8,7 @@ import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -26,8 +27,13 @@ public class Review implements Serializable {
     private UUID id;
 
     private String description;
-    private LocalDate dateOfCreation;
     private double mark;
+
+    @Column(name = "creation_date", updatable = false)
+    private LocalDateTime dateOfCreation;
+
+    @Column(name = "modification_date")
+    private LocalDateTime modificationDate;
 
     @Version
     private Long version;
@@ -39,4 +45,15 @@ public class Review implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @PrePersist
+    public void prePersist() {
+        dateOfCreation = LocalDateTime.now();
+        modificationDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        modificationDate = LocalDateTime.now();
+    }
 }
