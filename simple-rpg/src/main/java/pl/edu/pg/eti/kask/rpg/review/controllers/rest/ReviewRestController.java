@@ -18,10 +18,12 @@ import pl.edu.pg.eti.kask.rpg.review.dto.GetReviewResponse;
 import pl.edu.pg.eti.kask.rpg.review.dto.GetReviewsResponse;
 import pl.edu.pg.eti.kask.rpg.review.dto.PatchReviewRequest;
 import pl.edu.pg.eti.kask.rpg.review.dto.PutReviewRequest;
+import pl.edu.pg.eti.kask.rpg.review.dto.ReviewFilterRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -56,13 +58,32 @@ public class ReviewRestController implements ReviewController {
 
 
     @Override
-    public GetReviewsResponse getReviews(UUID gameId) {
+    public GetReviewsResponse getReviews(UUID gameId, String description, Double minMark, Double maxMark, UUID userId) {
         try {
-            return gameService.find(gameId)
-                    .map(game -> factory.reviewsToResponse()
-                            .apply(reviewService.findAllForGame(gameId)))
-                    .orElseThrow(NotFoundException::new);
-        }  catch (EJBException ex) {
+            // Check if any filter parameter is provided
+            boolean hasFilter = description != null || minMark != null || maxMark != null || userId != null;
+
+            if (hasFilter) {
+                // Build filter request with provided parameters
+                ReviewFilterRequest filter = ReviewFilterRequest.builder()
+                        .description(description)
+                        .minMark(minMark)
+                        .maxMark(maxMark)
+                        .userId(userId)
+                        .build();
+
+                return gameService.find(gameId)
+                        .map(game -> factory.reviewsToResponse()
+                                .apply(reviewService.findAllForGameWithFilter(gameId, filter)))
+                        .orElseThrow(NotFoundException::new);
+            } else {
+                // No filter - return all reviews for the game
+                return gameService.find(gameId)
+                        .map(game -> factory.reviewsToResponse()
+                                .apply(reviewService.findAllForGame(gameId)))
+                        .orElseThrow(NotFoundException::new);
+            }
+        } catch (EJBException ex) {
             log.log(Level.WARNING, ex.getMessage(), ex);
             throw new ForbiddenException(ex.getMessage());
         }

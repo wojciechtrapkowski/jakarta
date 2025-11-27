@@ -12,7 +12,11 @@ public interface ReviewController {
     @GET
     @Path("/games/{gameId}/reviews")
     @Produces(MediaType.APPLICATION_JSON)
-    GetReviewsResponse getReviews(@PathParam("gameId") UUID gameId);
+    GetReviewsResponse getReviews(@PathParam("gameId") UUID gameId,
+                                  @QueryParam("description") String description,
+                                  @QueryParam("minMark") Double minMark,
+                                  @QueryParam("maxMark") Double maxMark,
+                                  @QueryParam("userId") UUID userId);
 
     @GET
     @Path("/games/{gameId}/reviews/{reviewId}")

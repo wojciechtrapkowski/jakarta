@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.LogOperation;
 import pl.edu.pg.eti.kask.rpg.controller.interceptor.OperationLoggingInterceptor;
 import pl.edu.pg.eti.kask.rpg.controller.servlet.exception.NotFoundException;
+import pl.edu.pg.eti.kask.rpg.review.dto.ReviewFilterRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
@@ -59,6 +60,17 @@ public class ReviewService {
         User user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName()).orElseThrow();
 
         return reviewRepository.findAllForUserAndGame(user.getId(), gameId);
+    }
+
+    @RolesAllowed(UserRoles.USER)
+    public List<Review> findAllForGameWithFilter(UUID gameId, ReviewFilterRequest filter) {
+        if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            return reviewRepository.findWithFilterForGame(gameId, filter);
+        }
+
+        User user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName()).orElseThrow();
+
+        return reviewRepository.findWithFilterForUserAndGame(user.getId(), gameId, filter);
     }
 
 
