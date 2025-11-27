@@ -1,4 +1,4 @@
-package pl.edu.pg.eti.kask.rpg.push.context;
+package pl.edu.pg.eti.kask.rpg.chat.context;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import pl.edu.pg.eti.kask.rpg.chat.event.MessageEvent;
-import pl.edu.pg.eti.kask.rpg.push.dto.Message;
+import pl.edu.pg.eti.kask.rpg.chat.dto.Message;
 
 /**
  * Observer that listens to MessageEvent and sends it via JSF Push channels.

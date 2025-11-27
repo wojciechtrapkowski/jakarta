@@ -70,21 +70,13 @@ public class ReviewEditView implements Serializable {
     @Setter
     private ReviewEditModel review;
 
-    /**
-     * Flag indicating whether a version conflict occurred.
-     */
     @Getter
     private boolean versionConflict = false;
 
-    /**
-     * Current data from the database (shown when conflict occurs).
-     */
+    // Shown when conflict occurs
     @Getter
     private ReviewEditModel currentDatabaseReview;
 
-    /**
-     * User's submitted data that failed to save (shown when conflict occurs).
-     */
     @Getter
     private ReviewEditModel userSubmittedReview;
 
@@ -194,9 +186,6 @@ public class ReviewEditView implements Serializable {
         return null; // Stay on page with current data
     }
 
-    /**
-     * Action to cancel and go back to game view.
-     */
     public String cancelAction() {
         return "/game/game_view.xhtml?faces-redirect=true&id=" + review.getGame().getId();
     }

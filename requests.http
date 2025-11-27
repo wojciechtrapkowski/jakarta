@@ -25,7 +25,8 @@ Content-Type: application/json
 ### Get all games - everyone should be able to that.
 // @no-cookie-jar
 GET http://localhost:9080/simple-rpg/api/games
-Authorization: Basic {{KEVIN_TOKEN}}
+Cookie: oam.Flash.RENDERMAP.TOKEN=-9e84b2x9n; LtpaToken2=8guyac5SzJwG95L8Uv7mtZrwf2pOiStqgoSVEky0w2GJYve9juEynzZTAAikBlF+z6V5GSQDfppXl4HSI+Nqv/vALjm2jLvZNpFLiqYn+t3sybbhYcS303cyjjQ/JSjO/irbVT8CGBg4B4oPFHAHr/7Wj/St2NyQxkuWLUM7D5rmuP/4n0kxDRkNR0PD5MBXkb2f2E+XdLZGuZ48H0j/8sU2ivcwAERWY5Hx++glEOjOw8auHM2XKH1EW9ma/PWCv3V9vs/iwkJVu5a7Kx1IxzfR1OOLCfRopPor8henIuXWFCsPWJuKnbvebWm3g/m4HDr7NYSoepfIfMt87a2/7Z2okqjHrpetJDcM+MIaMObDWUEaoGrlRcMAuawaKOt5to+k1pbgtd6GzohywW4WlTPL0ee3HSgtO2+wHx8x0oH6IcHGua+MKZQuLbMe9nU1g3BYwN8l8UrKeEaVOrITOp1MAyGIPnYB3F+nSne+tvSXiJesMvrDt+Ov5m/3EFC42Oi5ImQriV3faG717WGenA==; WASReqURL=http://:9080/simple-rpg/game/games_list.xhtml; JSESSIONID=0000J3IXL6WMEwK_nBFK7rR78UZ:49ffd73a-1f57-41f8-aeff-36399ef0fd87; ajs_anonymous_id=16ab1d2b-88f9-4c20-bcde-585aedf1a145
+
 
 ### Get specific game - everyone should be able to that.
 // @no-cookie-jar

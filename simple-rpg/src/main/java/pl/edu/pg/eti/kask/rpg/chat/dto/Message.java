@@ -1,4 +1,4 @@
-package pl.edu.pg.eti.kask.rpg.push.dto;
+package pl.edu.pg.eti.kask.rpg.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

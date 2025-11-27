@@ -102,10 +102,6 @@ public class GameView implements Serializable {
         this.factory = factory;
     }
 
-    /**
-     * In order to prevent calling service on different steps of JSF request lifecycle, model property is cached within
-     * field and initialized during init of the view.
-     */
     public void init() throws IOException {
         Optional<Game> game = gameService.find(id);
         if (game.isPresent()) {
@@ -116,16 +112,10 @@ public class GameView implements Serializable {
         }
     }
 
-    /**
-     * Apply filters and reload reviews list.
-     */
     public void applyFilters() {
         loadReviews();
     }
 
-    /**
-     * Clear all filters and reload reviews list.
-     */
     public void clearFilters() {
         filterDescription = null;
         filterMinMark = null;

@@ -1,8 +1,8 @@
-package pl.edu.pg.eti.kask.rpg.push.context;
+package pl.edu.pg.eti.kask.rpg.chat.context;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
-import pl.edu.pg.eti.kask.rpg.push.dto.Message;
+import pl.edu.pg.eti.kask.rpg.chat.dto.Message;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.faces.push.Push;

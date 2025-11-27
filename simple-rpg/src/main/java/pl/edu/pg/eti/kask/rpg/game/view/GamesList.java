@@ -26,12 +26,6 @@ public class GamesList {
         this.factory = factory;
     }
 
-    /**
-     * In order to prevent calling service on different steps of JSF request lifecycle, model property is cached using
-     * lazy getter.
-     *
-     * @return all characters
-     */
     public GamesModel getGames() {
         if (games == null) {
             games = factory.gamesToModel().apply(service.findAll());

@@ -1,0 +1,1 @@
+This repository was my take on learning Java. After having done all of the assignments from Gdansk University of Technology's Jakarta course I have came up with the conclusion that I hate the language and don't want anything to do with it anymore. 
