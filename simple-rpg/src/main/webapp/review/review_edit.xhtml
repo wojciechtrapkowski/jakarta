@@ -67,6 +67,9 @@
                 <!-- Hidden field for version -->
                 <h:inputHidden id="version" value="#{reviewEditView.review.version}"/>
 
+                <!-- Global messages for validation errors -->
+                <h:messages id="globalMessages" globalOnly="true" styleClass="alert alert-danger" rendered="#{facesContext.messageList.size() > 0}"/>
+
                 <!-- Game selection dropdown -->
                 <!-- Here we should use converter, but I don't see any point - we work on UUIDS. -->
                 <div class="row mb-2">
@@ -82,16 +85,22 @@
                 <!-- Description -->
                 <div class="row mb-2">
                     <div class="col-6 p-2">
-                        <h:inputTextarea id="description" value="#{reviewEditView.review.description}" styleClass="form-control" rows="4"/>
+                        <h:inputTextarea id="description" value="#{reviewEditView.review.description}" styleClass="form-control" rows="4">
+                            <f:validateBean/>
+                        </h:inputTextarea>
                         <h:outputLabel for="description" value="#{msg['review.edit.description']}" styleClass="form-label"/>
+                        <h:message for="description" styleClass="text-danger"/>
                     </div>
                 </div>
 
                 <!-- Mark -->
                 <div class="row mb-2">
                     <div class="col-2 p-2">
-                        <h:inputText id="mark" value="#{reviewEditView.review.mark}" styleClass="form-control"/>
+                        <h:inputText id="mark" value="#{reviewEditView.review.mark}" styleClass="form-control">
+                            <f:validateBean/>
+                        </h:inputText>
                         <h:outputLabel for="mark" value="#{msg['review.edit.mark']}" styleClass="form-label"/>
+                        <h:message for="mark" styleClass="text-danger"/>
                     </div>
                 </div>
 
