@@ -2,6 +2,8 @@
 @KEVIN_TOKEN = a2V2aW46dXNlcnVzZXI=
 @ALICE_TOKEN = YWxpY2U6dXNlcnVzZXI=
 
+# Cookie: oam.Flash.RENDERMAP.TOKEN=-14ga8bj3vz; LtpaToken2=tdhGxG3ePXEe3i7AE/zGhmshHfpqDsdPZ7mm5q+33+ceKqGZ2rqVezzMR+b2zz1djyf217m8DySLpx+oczY5b9UGVLMC4/Y9px2tmBA8VZ5lRLJ/0yinZetKPbVJKGfnCuDVPKw/cliaus0SgE05fJCB6rKSe0xFFbNClD+RZspbE3PZHj/NGsIFNMKZlN1lC6P2v+hCOznFjNCt2+uBoIWhheSxZmyt6LIeejEUoY1kEExlc7X75q2/iso1PVpqv2gisEOVRGD3d0MCDx75GT36P7ri9OiWa7zdB8HxBF2XPuVJ2rVFxR/SklH/d3fvmVzv06E51mYZEUn4rJROezZDtDPuR0uQwA3MJhdskFxdc9AmnFOr5vyyBw3vrnVCkKpavcF7x0WOvE5nHhddFer539cXtjktEOTuVFkUuy80qPuUtvdPlkG/lr8hNTi8HLmKy0ZyLD2ixdAc+jvam3YJkY5jWCacTZP/rO+MANTxT3gEOzK4jvTsSRHb4kT5Q1OZvWRFum8WWeCGsLJ4hQ==; JSESSIONID=0000tKi42H9W_w1iAkRYrMuH1CQ:e8a3ca98-57e5-4883-8880-c466f0b9a340; ajs_anonymous_id=16ab1d2b-88f9-4c20-bcde-585aedf1a145
+
 # Get all users. Everyone should be able to that.
 // @no-cookie-jar
 GET http://localhost:9080/simple-rpg/api/users
