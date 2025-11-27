@@ -2,6 +2,7 @@ package pl.edu.pg.eti.kask.rpg.review.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -20,4 +21,9 @@ public class ReviewFilterRequest {
     private Double minMark;
     private Double maxMark;
     private UUID userId;
+    private Long version;
+    private LocalDateTime createdAfter;
+    private LocalDateTime createdBefore;
+    private LocalDateTime modifiedAfter;
+    private LocalDateTime modifiedBefore;
 }

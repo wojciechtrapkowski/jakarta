@@ -23,6 +23,7 @@ import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -57,7 +58,9 @@ public class ReviewRestController implements ReviewController {
 
 
     @Override
-    public GetReviewsResponse getReviews(UUID gameId, String description, Double minMark, Double maxMark, UUID userId) {
+    public GetReviewsResponse getReviews(UUID gameId, String description, Double minMark, Double maxMark, UUID userId,
+                                         Long version, LocalDateTime createdAfter, LocalDateTime createdBefore,
+                                         LocalDateTime modifiedAfter, LocalDateTime modifiedBefore) {
         try {
             // Build filter request with provided parameters (all are optional)
             ReviewFilterRequest filter = ReviewFilterRequest.builder()
@@ -65,6 +68,11 @@ public class ReviewRestController implements ReviewController {
                     .minMark(minMark)
                     .maxMark(maxMark)
                     .userId(userId)
+                    .version(version)
+                    .createdAfter(createdAfter)
+                    .createdBefore(createdBefore)
+                    .modifiedAfter(modifiedAfter)
+                    .modifiedBefore(modifiedBefore)
                     .build();
 
             return gameService.find(gameId)

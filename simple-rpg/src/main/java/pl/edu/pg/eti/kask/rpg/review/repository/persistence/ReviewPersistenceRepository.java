@@ -162,6 +162,26 @@ public class ReviewPersistenceRepository implements ReviewRepository {
         if (filter.getUserId() != null) {
             predicates.add(cb.equal(root.get("user").get("id"), filter.getUserId()));
         }
+
+        if (filter.getVersion() != null) {
+            predicates.add(cb.equal(root.get("version"), filter.getVersion()));
+        }
+
+        if (filter.getCreatedAfter() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("dateOfCreation"), filter.getCreatedAfter()));
+        }
+
+        if (filter.getCreatedBefore() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("dateOfCreation"), filter.getCreatedBefore()));
+        }
+
+        if (filter.getModifiedAfter() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("modificationDate"), filter.getModifiedAfter()));
+        }
+
+        if (filter.getModifiedBefore() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("modificationDate"), filter.getModifiedBefore()));
+        }
     }
 
     @Override
