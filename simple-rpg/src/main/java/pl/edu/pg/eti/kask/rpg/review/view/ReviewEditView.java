@@ -118,6 +118,10 @@ public class ReviewEditView implements Serializable {
 
     public String saveAction() {
         try {
+            // Fetch the full Game entity using the game ID from the form
+            Game selectedGame = gameService.find(review.getGame().getId()).orElseThrow();
+            review.setGame(selectedGame);
+            
             reviewService.update(factory.updateReview().apply(reviewService.find(reviewId).orElseThrow(), review));
             return "/game/game_view.xhtml?faces-redirect=true&id=" + review.getGame().getId();
         } catch (EJBException e) {
