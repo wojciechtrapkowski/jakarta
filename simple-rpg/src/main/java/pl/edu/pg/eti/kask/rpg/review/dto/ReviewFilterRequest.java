@@ -2,7 +2,6 @@ package pl.edu.pg.eti.kask.rpg.review.dto;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**

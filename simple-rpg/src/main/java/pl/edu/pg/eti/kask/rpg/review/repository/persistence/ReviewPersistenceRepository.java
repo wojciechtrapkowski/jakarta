@@ -143,7 +143,12 @@ public class ReviewPersistenceRepository implements ReviewRepository {
 
     private void addFilterPredicates(CriteriaBuilder cb, Root<Review> root, List<Predicate> predicates, ReviewFilterRequest filter) {
         if (filter.getDescription() != null && !filter.getDescription().isEmpty()) {
-            predicates.add(cb.like(cb.lower(root.get("description")), "%" + filter.getDescription().toLowerCase() + "%"));
+            // Escape special LIKE characters to prevent SQL injection
+            String escapedDescription = filter.getDescription()
+                    .replace("\\", "\\\\")
+                    .replace("%", "\\%")
+                    .replace("_", "\\_");
+            predicates.add(cb.like(cb.lower(root.get("description")), "%" + escapedDescription.toLowerCase() + "%", '\\'));
         }
 
         if (filter.getMinMark() != null) {
