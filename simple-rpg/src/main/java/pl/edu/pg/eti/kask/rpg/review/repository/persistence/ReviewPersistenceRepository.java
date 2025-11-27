@@ -8,9 +8,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import pl.edu.pg.eti.kask.rpg.review.dto.ReviewFilterRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -96,6 +98,90 @@ public class ReviewPersistenceRepository implements ReviewRepository {
         
         cq.select(root).where(cb.and(userIdPredicate, gameIdPredicate));
         return entityManager.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public List<Review> findWithFilterForGame(UUID gameId, ReviewFilterRequest filter) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+        Root<Review> root = cq.from(Review.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Always filter by game
+        predicates.add(cb.equal(root.get("game").get("id"), gameId));
+
+        // Add optional filter predicates
+        addFilterPredicates(cb, root, predicates, filter);
+
+        cq.select(root);
+        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+
+        return entityManager.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public List<Review> findWithFilterForUserAndGame(UUID userId, UUID gameId, ReviewFilterRequest filter) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+        Root<Review> root = cq.from(Review.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Always filter by user and game
+        predicates.add(cb.equal(root.get("user").get("id"), userId));
+        predicates.add(cb.equal(root.get("game").get("id"), gameId));
+
+        // Add optional filter predicates
+        addFilterPredicates(cb, root, predicates, filter);
+
+        cq.select(root);
+        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+
+        return entityManager.createQuery(cq).getResultList();
+    }
+
+    private void addFilterPredicates(CriteriaBuilder cb, Root<Review> root, List<Predicate> predicates, ReviewFilterRequest filter) {
+        if (filter.getDescription() != null && !filter.getDescription().isEmpty()) {
+            // Escape special LIKE characters to prevent SQL injection
+            String escapedDescription = filter.getDescription()
+                    .replace("\\", "\\\\")
+                    .replace("%", "\\%")
+                    .replace("_", "\\_");
+            predicates.add(cb.like(cb.lower(root.get("description")), "%" + escapedDescription.toLowerCase() + "%", '\\'));
+        }
+
+        if (filter.getMinMark() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("mark"), filter.getMinMark()));
+        }
+
+        if (filter.getMaxMark() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("mark"), filter.getMaxMark()));
+        }
+
+        if (filter.getUserId() != null) {
+            predicates.add(cb.equal(root.get("user").get("id"), filter.getUserId()));
+        }
+
+        if (filter.getVersion() != null) {
+            predicates.add(cb.equal(root.get("version"), filter.getVersion()));
+        }
+
+        if (filter.getCreatedAfter() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("dateOfCreation"), filter.getCreatedAfter()));
+        }
+
+        if (filter.getCreatedBefore() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("dateOfCreation"), filter.getCreatedBefore()));
+        }
+
+        if (filter.getModifiedAfter() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("modificationDate"), filter.getModifiedAfter()));
+        }
+
+        if (filter.getModifiedBefore() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("modificationDate"), filter.getModifiedBefore()));
+        }
     }
 
     @Override

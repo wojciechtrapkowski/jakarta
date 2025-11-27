@@ -3,6 +3,7 @@
                 xmlns:h="jakarta.faces.html"
                 xmlns:ui="jakarta.faces.facelets"
                 xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough"
                 template="/template/main.xhtml">
 
     <f:metadata>
@@ -41,6 +42,83 @@
             </div>
 
             <h3>#{msg['game.reviews']}</h3>
+
+            <!-- Filter Form -->
+            <h:form id="filterForm" styleClass="mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">#{msg['filter.title']}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">#{msg['filter.description']}</label>
+                                <h:inputText value="#{gameView.filterDescription}" styleClass="form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">#{msg['filter.minMark']}</label>
+                                <h:inputText value="#{gameView.filterMinMark}" styleClass="form-control">
+                                    <f:convertNumber type="number"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">#{msg['filter.maxMark']}</label>
+                                <h:inputText value="#{gameView.filterMaxMark}" styleClass="form-control">
+                                    <f:convertNumber type="number"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">#{msg['filter.version']}</label>
+                                <h:inputText value="#{gameView.filterVersion}" styleClass="form-control">
+                                    <f:convertNumber integerOnly="true"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-3">
+                                <label class="form-label">#{msg['filter.createdAfter']}</label>
+                                <h:inputText value="#{gameView.filterCreatedAfter}" styleClass="form-control" 
+                                             pt:type="datetime-local">
+                                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">#{msg['filter.createdBefore']}</label>
+                                <h:inputText value="#{gameView.filterCreatedBefore}" styleClass="form-control"
+                                             pt:type="datetime-local">
+                                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">#{msg['filter.modifiedAfter']}</label>
+                                <h:inputText value="#{gameView.filterModifiedAfter}" styleClass="form-control"
+                                             pt:type="datetime-local">
+                                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
+                                </h:inputText>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">#{msg['filter.modifiedBefore']}</label>
+                                <h:inputText value="#{gameView.filterModifiedBefore}" styleClass="form-control"
+                                             pt:type="datetime-local">
+                                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <h:commandButton value="#{msg['filter.apply']}" styleClass="btn btn-primary me-2"
+                                                 action="#{gameView.applyFilters()}">
+                                    <f:ajax execute="@form" render=":reviewsForm:reviewsTable"/>
+                                </h:commandButton>
+                                <h:commandButton value="#{msg['filter.clear']}" styleClass="btn btn-secondary"
+                                                 action="#{gameView.clearFilters()}">
+                                    <f:ajax execute="@form" render="@form :reviewsForm:reviewsTable"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
 
             <h:form id="reviewsForm">
                 <h:dataTable id="reviewsTable" value="#{gameView.game.reviews}" var="review" styleClass="table">

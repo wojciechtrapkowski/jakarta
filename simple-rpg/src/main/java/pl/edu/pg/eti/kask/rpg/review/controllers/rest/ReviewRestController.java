@@ -18,10 +18,13 @@ import pl.edu.pg.eti.kask.rpg.review.dto.GetReviewResponse;
 import pl.edu.pg.eti.kask.rpg.review.dto.GetReviewsResponse;
 import pl.edu.pg.eti.kask.rpg.review.dto.PatchReviewRequest;
 import pl.edu.pg.eti.kask.rpg.review.dto.PutReviewRequest;
+import pl.edu.pg.eti.kask.rpg.review.dto.ReviewFilterRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
 import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -54,15 +57,51 @@ public class ReviewRestController implements ReviewController {
         this.userService = userService;
     }
 
+    /**
+     * Parse a date string to LocalDateTime. Returns null if the string is null or empty.
+     * Throws BadRequestException if the format is invalid.
+     */
+    private LocalDateTime parseDateTime(String dateTimeStr) {
+        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
+            return null;
+        }
+        try {
+            return LocalDateTime.parse(dateTimeStr);
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException("Invalid date format: " + dateTimeStr + ". Expected ISO-8601 format (e.g., 2024-01-01T00:00:00)");
+        }
+    }
+
 
     @Override
-    public GetReviewsResponse getReviews(UUID gameId) {
+    public GetReviewsResponse getReviews(UUID gameId, String description, Double minMark, Double maxMark, UUID userId,
+                                         Long version, String createdAfter, String createdBefore,
+                                         String modifiedAfter, String modifiedBefore) {
         try {
+            // Parse date strings to LocalDateTime
+            LocalDateTime createdAfterDateTime = parseDateTime(createdAfter);
+            LocalDateTime createdBeforeDateTime = parseDateTime(createdBefore);
+            LocalDateTime modifiedAfterDateTime = parseDateTime(modifiedAfter);
+            LocalDateTime modifiedBeforeDateTime = parseDateTime(modifiedBefore);
+
+            // Build filter request with provided parameters (all are optional)
+            ReviewFilterRequest filter = ReviewFilterRequest.builder()
+                    .description(description)
+                    .minMark(minMark)
+                    .maxMark(maxMark)
+                    .userId(userId)
+                    .version(version)
+                    .createdAfter(createdAfterDateTime)
+                    .createdBefore(createdBeforeDateTime)
+                    .modifiedAfter(modifiedAfterDateTime)
+                    .modifiedBefore(modifiedBeforeDateTime)
+                    .build();
+
             return gameService.find(gameId)
                     .map(game -> factory.reviewsToResponse()
-                            .apply(reviewService.findAllForGame(gameId)))
+                            .apply(reviewService.findAllForGameWithFilter(gameId, filter)))
                     .orElseThrow(NotFoundException::new);
-        }  catch (EJBException ex) {
+        } catch (EJBException ex) {
             log.log(Level.WARNING, ex.getMessage(), ex);
             throw new ForbiddenException(ex.getMessage());
         }
