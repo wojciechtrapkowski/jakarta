@@ -13,6 +13,7 @@ import pl.edu.pg.eti.kask.rpg.game.entity.Game;
 import pl.edu.pg.eti.kask.rpg.game.model.GameModel;
 import pl.edu.pg.eti.kask.rpg.game.model.GamesModel;
 import pl.edu.pg.eti.kask.rpg.game.service.GameService;
+import pl.edu.pg.eti.kask.rpg.review.dto.ReviewFilterRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
 import pl.edu.pg.eti.kask.rpg.review.model.ReviewModel;
 import pl.edu.pg.eti.kask.rpg.review.service.ReviewService;
@@ -21,6 +22,7 @@ import pl.edu.pg.eti.kask.rpg.user.service.UserService;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +47,39 @@ public class GameView implements Serializable {
 
     @Getter
     private GameModel game;
+
+    // Filter fields
+    @Setter
+    @Getter
+    private String filterDescription;
+
+    @Setter
+    @Getter
+    private Double filterMinMark;
+
+    @Setter
+    @Getter
+    private Double filterMaxMark;
+
+    @Setter
+    @Getter
+    private Long filterVersion;
+
+    @Setter
+    @Getter
+    private LocalDateTime filterCreatedAfter;
+
+    @Setter
+    @Getter
+    private LocalDateTime filterCreatedBefore;
+
+    @Setter
+    @Getter
+    private LocalDateTime filterModifiedAfter;
+
+    @Setter
+    @Getter
+    private LocalDateTime filterModifiedBefore;
 
     @EJB
     public void setGameService(GameService gameService) {
@@ -74,34 +109,72 @@ public class GameView implements Serializable {
     public void init() throws IOException {
         Optional<Game> game = gameService.find(id);
         if (game.isPresent()) {
-            String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
-            boolean isAdmin = FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
-            
-            List<ReviewModel> reviewModels = reviewService.findAllForGame(game.get().getId())
-                    .stream()
-                    .filter(review -> {
-                        // Admins see all reviews, regular users see only their own
-                        if (isAdmin) {
-                            return true;
-                        }
-                        String reviewOwnerLogin = review.getUser().getLogin();
-                        return reviewOwnerLogin.equals(currentUsername);
-                    })
-                    .map(review -> {
-                        ReviewModel model = factory.reviewToModel().apply(review);
-                        // fetch username
-                        String username = userService.find(review.getUser().getId())
-                                .map(User::getName) // or getUsername()
-                                .orElse("Unknown user");
-                        model.setUserName(username);
-                        return model;
-                    }).toList();
-
             this.game = factory.gameToModel().apply(game.get());
-            this.game.setReviews(reviewModels);
+            loadReviews();
         } else {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Game not found");
         }
+    }
+
+    /**
+     * Apply filters and reload reviews list.
+     */
+    public void applyFilters() {
+        loadReviews();
+    }
+
+    /**
+     * Clear all filters and reload reviews list.
+     */
+    public void clearFilters() {
+        filterDescription = null;
+        filterMinMark = null;
+        filterMaxMark = null;
+        filterVersion = null;
+        filterCreatedAfter = null;
+        filterCreatedBefore = null;
+        filterModifiedAfter = null;
+        filterModifiedBefore = null;
+        loadReviews();
+    }
+
+    private void loadReviews() {
+        String currentUsername = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+        boolean isAdmin = FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
+
+        // Build filter request
+        ReviewFilterRequest filter = ReviewFilterRequest.builder()
+                .description(filterDescription)
+                .minMark(filterMinMark)
+                .maxMark(filterMaxMark)
+                .version(filterVersion)
+                .createdAfter(filterCreatedAfter)
+                .createdBefore(filterCreatedBefore)
+                .modifiedAfter(filterModifiedAfter)
+                .modifiedBefore(filterModifiedBefore)
+                .build();
+
+        List<ReviewModel> reviewModels = reviewService.findAllForGameWithFilter(id, filter)
+                .stream()
+                .filter(review -> {
+                    // Admins see all reviews, regular users see only their own
+                    if (isAdmin) {
+                        return true;
+                    }
+                    String reviewOwnerLogin = review.getUser().getLogin();
+                    return reviewOwnerLogin.equals(currentUsername);
+                })
+                .map(review -> {
+                    ReviewModel model = factory.reviewToModel().apply(review);
+                    // fetch username
+                    String username = userService.find(review.getUser().getId())
+                            .map(User::getName)
+                            .orElse("Unknown user");
+                    model.setUserName(username);
+                    return model;
+                }).toList();
+
+        this.game.setReviews(reviewModels);
     }
 
     public void deleteReview(UUID reviewId) {
@@ -114,12 +187,8 @@ public class GameView implements Serializable {
             // Check if user is owner or admin
             if (isAdmin || reviewOwnerLogin.equals(currentUsername)) {
                 reviewService.delete(review.get());
-                // Refresh the game data to update the reviews list
-                try {
-                    init();
-                } catch (IOException e) {
-                    // Handle exception if needed
-                }
+                // Refresh the reviews list
+                loadReviews();
             }
         }
     }
