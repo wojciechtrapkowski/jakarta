@@ -65,7 +65,7 @@
             
             <h:form styleClass="container">
                 <!-- Hidden field for version -->
-                <h:inputHidden value="#{reviewEditView.review.version}"/>
+                <h:inputHidden id="version" value="#{reviewEditView.review.version}"/>
 
                 <!-- Game selection dropdown -->
                 <!-- Here we should use converter, but I don't see any point - we work on UUIDS. -->
@@ -104,6 +104,9 @@
                         <h:commandButton styleClass="btn btn-secondary" type="reset" value="#{msg['review.edit.reset']}"/>
                     </div>
                     <h:panelGroup rendered="#{reviewEditView.versionConflict}">
+                        <div class="col-2 p-2 text-center">
+                            <h:commandButton styleClass="btn btn-info" value="#{msg['review.edit.conflict.retry']}" action="#{reviewEditView.retryWithCurrentData()}"/>
+                        </div>
                         <div class="col-2 p-2 text-center">
                             <h:commandButton styleClass="btn btn-warning" value="#{msg['review.edit.conflict.cancel']}" action="#{reviewEditView.cancelAction()}" immediate="true"/>
                         </div>

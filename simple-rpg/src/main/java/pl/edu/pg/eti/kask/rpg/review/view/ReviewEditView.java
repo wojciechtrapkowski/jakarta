@@ -169,11 +169,13 @@ public class ReviewEditView implements Serializable {
             this.review = factory.reviewToEditModel().apply(currentReview.get());
         }
         
-        // Add a faces message to inform the user
+        // Add a faces message to inform the user using internationalized messages
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("messages", 
+                FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        String title = bundle.getString("review.edit.conflict.title");
+        String message = bundle.getString("review.edit.conflict.message");
         FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-                        "Version Conflict", 
-                        "The review has been modified by another user. Please review the changes below."));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, title, message));
     }
 
     /**
