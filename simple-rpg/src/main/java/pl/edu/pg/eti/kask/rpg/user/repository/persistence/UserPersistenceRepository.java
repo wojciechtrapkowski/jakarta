@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
+import pl.edu.pg.eti.kask.rpg.user.entity.User_;
 import pl.edu.pg.eti.kask.rpg.user.repository.api.UserRepository;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class UserPersistenceRepository implements UserRepository {
             CriteriaQuery<User> cq = cb.createQuery(User.class);
             Root<User> root = cq.from(User.class);
             
-            Predicate loginPredicate = cb.equal(root.get("login"), login);
+            Predicate loginPredicate = cb.equal(root.get(User_.login), login);
             
             cq.select(root).where(loginPredicate);
             

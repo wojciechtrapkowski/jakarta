@@ -8,9 +8,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import pl.edu.pg.eti.kask.rpg.game.entity.Game_;
 import pl.edu.pg.eti.kask.rpg.review.dto.ReviewFilterRequest;
 import pl.edu.pg.eti.kask.rpg.review.entity.Review;
+import pl.edu.pg.eti.kask.rpg.review.entity.Review_;
 import pl.edu.pg.eti.kask.rpg.review.repository.api.ReviewRepository;
+import pl.edu.pg.eti.kask.rpg.user.entity.User_;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +39,8 @@ public class ReviewPersistenceRepository implements ReviewRepository {
             CriteriaQuery<Review> cq = cb.createQuery(Review.class);
             Root<Review> root = cq.from(Review.class);
             
-            Predicate reviewIdPredicate = cb.equal(root.get("id"), reviewId);
-            Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+            Predicate reviewIdPredicate = cb.equal(root.get(Review_.id), reviewId);
+            Predicate gameIdPredicate = cb.equal(root.get(Review_.game).get(Game_.id), gameId);
             
             cq.select(root).where(cb.and(reviewIdPredicate, gameIdPredicate));
             
@@ -55,9 +58,9 @@ public class ReviewPersistenceRepository implements ReviewRepository {
             CriteriaQuery<Review> cq = cb.createQuery(Review.class);
             Root<Review> root = cq.from(Review.class);
             
-            Predicate reviewIdPredicate = cb.equal(root.get("id"), reviewId);
-            Predicate userIdPredicate = cb.equal(root.get("user").get("id"), userId);
-            Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+            Predicate reviewIdPredicate = cb.equal(root.get(Review_.id), reviewId);
+            Predicate userIdPredicate = cb.equal(root.get(Review_.user).get(User_.id), userId);
+            Predicate gameIdPredicate = cb.equal(root.get(Review_.game).get(Game_.id), gameId);
             
             cq.select(root).where(cb.and(reviewIdPredicate, userIdPredicate, gameIdPredicate));
             
@@ -82,7 +85,7 @@ public class ReviewPersistenceRepository implements ReviewRepository {
         CriteriaQuery<Review> cq = cb.createQuery(Review.class);
         Root<Review> root = cq.from(Review.class);
         
-        Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+        Predicate gameIdPredicate = cb.equal(root.get(Review_.game).get(Game_.id), gameId);
         
         cq.select(root).where(gameIdPredicate);
         return entityManager.createQuery(cq).getResultList();
@@ -93,8 +96,8 @@ public class ReviewPersistenceRepository implements ReviewRepository {
         CriteriaQuery<Review> cq = cb.createQuery(Review.class);
         Root<Review> root = cq.from(Review.class);
         
-        Predicate userIdPredicate = cb.equal(root.get("user").get("id"), userId);
-        Predicate gameIdPredicate = cb.equal(root.get("game").get("id"), gameId);
+        Predicate userIdPredicate = cb.equal(root.get(Review_.user).get(User_.id), userId);
+        Predicate gameIdPredicate = cb.equal(root.get(Review_.game).get(Game_.id), gameId);
         
         cq.select(root).where(cb.and(userIdPredicate, gameIdPredicate));
         return entityManager.createQuery(cq).getResultList();
@@ -109,7 +112,7 @@ public class ReviewPersistenceRepository implements ReviewRepository {
         List<Predicate> predicates = new ArrayList<>();
 
         // Always filter by game
-        predicates.add(cb.equal(root.get("game").get("id"), gameId));
+        predicates.add(cb.equal(root.get(Review_.game).get(Game_.id), gameId));
 
         // Add optional filter predicates
         addFilterPredicates(cb, root, predicates, filter);
@@ -129,8 +132,8 @@ public class ReviewPersistenceRepository implements ReviewRepository {
         List<Predicate> predicates = new ArrayList<>();
 
         // Always filter by user and game
-        predicates.add(cb.equal(root.get("user").get("id"), userId));
-        predicates.add(cb.equal(root.get("game").get("id"), gameId));
+        predicates.add(cb.equal(root.get(Review_.user).get(User_.id), userId));
+        predicates.add(cb.equal(root.get(Review_.game).get(Game_.id), gameId));
 
         // Add optional filter predicates
         addFilterPredicates(cb, root, predicates, filter);
@@ -148,39 +151,39 @@ public class ReviewPersistenceRepository implements ReviewRepository {
                     .replace("\\", "\\\\")
                     .replace("%", "\\%")
                     .replace("_", "\\_");
-            predicates.add(cb.like(cb.lower(root.get("description")), "%" + escapedDescription.toLowerCase() + "%", '\\'));
+            predicates.add(cb.like(cb.lower(root.get(Review_.description)), "%" + escapedDescription.toLowerCase() + "%", '\\'));
         }
 
         if (filter.getMinMark() != null) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("mark"), filter.getMinMark()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get(Review_.mark), filter.getMinMark()));
         }
 
         if (filter.getMaxMark() != null) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("mark"), filter.getMaxMark()));
+            predicates.add(cb.lessThanOrEqualTo(root.get(Review_.mark), filter.getMaxMark()));
         }
 
         if (filter.getUserId() != null) {
-            predicates.add(cb.equal(root.get("user").get("id"), filter.getUserId()));
+            predicates.add(cb.equal(root.get(Review_.user).get(User_.id), filter.getUserId()));
         }
 
         if (filter.getVersion() != null) {
-            predicates.add(cb.equal(root.get("version"), filter.getVersion()));
+            predicates.add(cb.equal(root.get(Review_.version), filter.getVersion()));
         }
 
         if (filter.getCreatedAfter() != null) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("dateOfCreation"), filter.getCreatedAfter()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get(Review_.dateOfCreation), filter.getCreatedAfter()));
         }
 
         if (filter.getCreatedBefore() != null) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("dateOfCreation"), filter.getCreatedBefore()));
+            predicates.add(cb.lessThanOrEqualTo(root.get(Review_.dateOfCreation), filter.getCreatedBefore()));
         }
 
         if (filter.getModifiedAfter() != null) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("modificationDate"), filter.getModifiedAfter()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get(Review_.modificationDate), filter.getModifiedAfter()));
         }
 
         if (filter.getModifiedBefore() != null) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("modificationDate"), filter.getModifiedBefore()));
+            predicates.add(cb.lessThanOrEqualTo(root.get(Review_.modificationDate), filter.getModifiedBefore()));
         }
     }
 
