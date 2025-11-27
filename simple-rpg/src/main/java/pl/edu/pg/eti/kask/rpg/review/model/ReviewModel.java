@@ -19,7 +19,6 @@ import java.util.UUID;
 public class ReviewModel {
     private UUID id;
     private String description;
-    private LocalDate dateOfCreation;
     private double mark;
     private Long version;
 

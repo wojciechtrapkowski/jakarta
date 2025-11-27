@@ -43,7 +43,9 @@
                 <div class="row mb-2">
                     <div class="col-4">#{msg['review.date']}</div>
                     <div class="col-8">
-                        <h:outputText value="#{reviewView.review.dateOfCreation}"/>
+                        <h:outputText value="#{reviewView.review.creationDate}">
+                        <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
                     </div>
                 </div>
 

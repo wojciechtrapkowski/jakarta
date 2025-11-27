@@ -130,6 +130,7 @@ public class ReviewEditView implements Serializable {
             handleVersionConflict();
             return null; // Stay on the same page
         }
+
     }
 
     /**
@@ -157,6 +158,7 @@ public class ReviewEditView implements Serializable {
                 .description(review.getDescription())
                 .mark(review.getMark())
                 .version(review.getVersion())
+                .dateOfCreation(review.getDateOfCreation())
                 .game(review.getGame())
                 .user(review.getUser())
                 .build();

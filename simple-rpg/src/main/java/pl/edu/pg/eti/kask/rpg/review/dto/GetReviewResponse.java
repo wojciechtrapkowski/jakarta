@@ -6,6 +6,7 @@ import pl.edu.pg.eti.kask.rpg.game.entity.GameType;
 import pl.edu.pg.eti.kask.rpg.user.entity.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,5 +23,5 @@ public class GetReviewResponse {
     private double mark;
     private UUID gameId;
     private UUID userId;
-    private LocalDate dateOfCreation;
+    private LocalDateTime dateOfCreation;
 }

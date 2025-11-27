@@ -27,11 +27,10 @@ public class Review implements Serializable {
     private UUID id;
 
     private String description;
-    private LocalDate dateOfCreation;
     private double mark;
 
     @Column(name = "creation_date", updatable = false)
-    private LocalDateTime creationDate;
+    private LocalDateTime dateOfCreation;
 
     @Column(name = "modification_date")
     private LocalDateTime modificationDate;
@@ -49,7 +48,7 @@ public class Review implements Serializable {
 
     @PrePersist
     public void prePersist() {
-        creationDate = LocalDateTime.now();
+        dateOfCreation = LocalDateTime.now();
         modificationDate = LocalDateTime.now();
     }
 
